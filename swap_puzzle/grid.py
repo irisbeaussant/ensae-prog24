@@ -57,8 +57,17 @@ class Grid():
         """
         Checks is the current state of the grid is sorte and returns the answer as a boolean.
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        for i in range (self.m):
+            for j in range (self.n-1):
+                if self.state[i][j]>self.state[i][j+1]:
+                    return False
+        return True
+
+        """
+        testé : ok
+        """
+
+        
 
     def swap(self, cell1, cell2):
         """
@@ -69,8 +78,13 @@ class Grid():
         cell1, cell2: tuple[int]
             The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        
+        (self.state[cell1[0]][cell1[1]],self.state[cell2[0]][cell2[1]])=(self.state[cell2[0]][cell2[1]],self.state[cell1[0]][cell1[1]])
+        
+        """
+        testé : ok
+        """
+       
 
     def swap_seq(self, cell_pair_list):
         """
@@ -82,8 +96,12 @@ class Grid():
             List of swaps, each swap being a tuple of two cells (each cell being a tuple of integers). 
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        for i in range(len(cell_pair_list)):
+            Grid.swap(self,cell_pair_list[i][0],cell_pair_list[i][1])
+        """
+        testé : ok
+        """    
+
 
     @classmethod
     def grid_from_file(cls, file_name): 
@@ -97,7 +115,7 @@ class Grid():
             - first line contains "m n" 
             - next m lines contain n integers that represent the state of the corresponding cell
 
-        Output: 
+        Output:
         -------
         grid: Grid
             The grid
