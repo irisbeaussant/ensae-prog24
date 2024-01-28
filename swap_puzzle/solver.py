@@ -12,11 +12,24 @@ class Solver():
                     return (i,j)
     #cette fonction permet de trouver un chiffre dans la grille, afin de connaître ses coordonnées, pour ensuite savoir comment le déplacer jusqu'à la bonne place
 
+    def calcul_coordonnées(x,m,n):
+        i=x//n
+        j=x%n
+        return (i,j)
+    #cette fonction permet de déterminer les coordonnées d'un chiffre (compris entre 1 et m*n) dans la grille
 
+        
     def get_solution(self):
-        for k in range(self.n*self.m):
-            if trouver(self,k)[1]>
-            
+        changements=[]
+        for l in range (1, m*n+1):
+            i1,j1=trouver(self,l)
+            i,j=calcul_coordonnées(l,m,n)
+            while i1,j1!=i,j:
+                if i1>i:
+                elif i1<i:
+                if j1>j:
+                elif j1<j:
+                        
 
 
 
