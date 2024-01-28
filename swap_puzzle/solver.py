@@ -24,8 +24,10 @@ class Solver():
         for l in range (1, m*n+1):
             i1,j1=trouver(self,l)
             i,j=calcul_coordonnées(l,m,n)
+            x=
             while i1,j1!=i,j:
                 if i1>i:
+                    swap(self, x, (i1,j1)
                 elif i1<i:
                 if j1>j:
                 elif j1<j:
