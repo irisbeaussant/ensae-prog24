@@ -134,3 +134,15 @@ class Grid():
         return grid
 
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+def representation_graphique(grid):
+     tableau=np.array(grid)
+     plt.imshow(tableau)
+     plt.show()
+
+if __name__=='__representation_graphique__':
+     représentation_graphique(grid)

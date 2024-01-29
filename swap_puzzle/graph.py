@@ -97,8 +97,24 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        sommets_visités=[False for i in range()]
+        file=[src, [src]]
+
+        while len(file)!=0: #i.e. tant que la file n'est pas vide
+            x, chemin=file.popleft()
+            #x correspond au sommet sur lequel on est actuellement
+
+            if x==dst:
+                return chemin #on a trouvé le chemin le plus court
+
+            if not sommets_visités[x]:
+                sommets_visités[x]=True
+
+            for y in g(x): #y parcourt les sommets voisins
+                if not sommets_visités[y]: 
+                    file.append(y,chemin + [y])
+
+        return None #alors aucun chemin n'a été trouvé
 
     @classmethod
     def graph_from_file(cls, file_name):
