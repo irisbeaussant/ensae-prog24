@@ -150,6 +150,18 @@ import matplotlib.pyplot as plt
         Question 6 :
         Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non mutable, par exemple un frozenset.
         """
+from itertools import permutations
+import numpy as np
+
+    def noeuds(m,n):
+        l=[k for k in range (1,(m*n+1))] #on crée la liste de tous les nombres contenus dans la grille
+        perm=list(permutations(l,m*n))
+        toutes_grilles=[]
+        for i in perm:
+         i=np.array(i).reshape((m,n))
+            toutes_grilles.append(i)
+        return toutes_grilles
+
 
     def hash(grid):
         gridbis=frozenset(grid)
