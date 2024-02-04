@@ -139,10 +139,24 @@ import matplotlib.pyplot as plt
 
 
 
-def representation_graphique(grid):
-     tableau=np.array(grid)
-     plt.imshow(tableau)
+    def representation_graphique(grid):
+     arr = np.array(grid)
+     fig, ax = plt.subplots()
+     img = ax.imshow(arr, cmap='viridis')
      plt.show()
 
-if __name__=='__representation_graphique__':
-     représentation_graphique(grid)
+    
+        """
+        Question 6 :
+        Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non mutable, par exemple un frozenset.
+        """
+
+    def hash(grid):
+        gridbis=frozenset(grid)
+        return gridbis
+
+
+
+        """
+        Question 7
+        """

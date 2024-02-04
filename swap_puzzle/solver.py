@@ -42,8 +42,10 @@ class Solver():
             return changements
 
         """
-        La fonction fonctionne quel que soit l'état initial de la grille.
-        La longueur de chemin n'est cependant pas idéale 
+        -cet algorithme ressemble à celui du tri par selection dans la mesure où on va chercher d'abord le plus petit pour le mettre à la bonne place, plus le deuxième petit et ainsi de suite. L'algorithme de tri à plat a une complexité quadratique.
+        -la longueur de calcul, i.e. le nombre de swaps va dépendre de l'état initial de la grille, il peut donc aller de 1 à 
+        -La fonction fonctionne quel que soit l'état initial de la grille.
+        -La longueur de chemin n'est cependant pas idéale puisqu'o
         """
 
 

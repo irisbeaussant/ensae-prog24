@@ -97,24 +97,34 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        sommets_visités=[False for i in range()]
-        file=[src, [src]]
+        liste=[src]
+        sommets_visites=[]
+        parents={}
 
-        while len(file)!=0: #i.e. tant que la file n'est pas vide
-            x, chemin=file.popleft()
-            #x correspond au sommet sur lequel on est actuellement
+        while len(liste)!=0: 
+            x=liste.pop()
+
+            """
+            x correspond au sommet sur lequel on est actuellement
+            """
 
             if x==dst:
-                return chemin #on a trouvé le chemin le plus court
+                break 
 
-            if not sommets_visités[x]:
-                sommets_visités[x]=True
+            if x not in sommets_visites:
+                sommets_visites.append(x)
+            
+            for voisin in graph[x]:
+                if voisin not in sommets_visites: 
+                    liste.append(voisin)
+                    parents[voisin]=x
+                    sommets_visites.append(voisin)
 
-            for y in g(x): #y parcourt les sommets voisins
-                if not sommets_visités[y]: 
-                    file.append(y,chemin + [y])
-
-        return None #alors aucun chemin n'a été trouvé
+        chemin=[dst]
+        y=dst
+        while y!=d:
+            y=parents[y]
+            chemin=[y]+chemin
 
     @classmethod
     def graph_from_file(cls, file_name):
