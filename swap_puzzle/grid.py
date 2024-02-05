@@ -30,7 +30,7 @@ class Grid():
         n: int
             Number of columns in the grid
         initial_state: list[list[int]]
-            The intiail state of the grid. Default is empty (then the grid is created sorted).
+            The initial state of the grid. Default is empty (then the grid is created sorted).
         """
         self.m = m
         self.n = n
@@ -55,7 +55,7 @@ class Grid():
 
     def is_sorted(self):
         """
-        Checks is the current state of the grid is sorte and returns the answer as a boolean.
+        Checks is the current state of the grid is sorted and returns the answer as a boolean.
         """
         for i in range (self.m):
             for j in range (self.n-1):
@@ -163,7 +163,7 @@ import numpy as np
         return toutes_grilles
 
 
-    def hash(grid):
+    def hash(grid): #rend hashable
         gridbis=frozenset(grid)
         return gridbis
 

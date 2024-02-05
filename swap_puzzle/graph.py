@@ -58,7 +58,7 @@ class Graph:
     def add_edge(self, node1, node2):
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
-        When adding an edge between two nodes, if one of the ones does not exist it is added to the list of nodes.
+        When adding an edge between two nodes, if one of the nodes does not exist it is added to the list of nodes.
 
         Parameters: 
         -----------
@@ -101,6 +101,18 @@ class Graph:
         sommets_visites=[]
         parents={}
 
+        g = {}
+        for edge in self.edges:
+            node1, node2 = edge
+            if node1 not in g:
+                g[node1] = []
+            if node2 not in g:
+                g[node2] = []
+
+            g[node1]+=[node2]
+            g[node2]+=[node1]
+        print(g)
+
         while len(liste)!=0: 
             x=liste.pop()
 
@@ -108,23 +120,25 @@ class Graph:
             x correspond au sommet sur lequel on est actuellement
             """
 
-            if x==dst:
+            if x == dst:
                 break 
 
             if x not in sommets_visites:
                 sommets_visites.append(x)
             
-            for voisin in graph[x]:
+            for voisin in g[x]:
                 if voisin not in sommets_visites: 
                     liste.append(voisin)
-                    parents[voisin]=x
+                    parents[voisin] = x
                     sommets_visites.append(voisin)
 
-        chemin=[dst]
-        y=dst
-        while y!=d:
-            y=parents[y]
-            chemin=[y]+chemin
+        chemin = [dst]
+        y = dst
+        while y != src:
+            y = parents[y]
+            chemin = [y] + chemin
+
+        return chemin
 
     @classmethod
     def graph_from_file(cls, file_name):
@@ -153,7 +167,7 @@ class Graph:
                 edge = list(map(int, file.readline().split()))
                 if len(edge) == 2:
                     node1, node2 = edge
-                    graph.add_edge(node1, node2) # will add dist=1 by default
+                    graph.add_edge(node1, node2)  # will add dist=1 by default
                 else:
                     raise Exception("Format incorrect")
         return graph

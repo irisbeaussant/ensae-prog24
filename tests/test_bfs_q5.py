@@ -8,9 +8,15 @@ from graph import Graph
 
 class Test_bfs(unittest.TestCase):
     def test_graph1(self):
-        graph = Graph.graph_from_file("input/graph1.in")
-        graph.bfs(self,1,3)
-        self.assertEqual([1,15,3])
-
+        g = Graph.graph_from_file("input/graph1.in")
+        print(g)
+        self.assertIn(g.bfs(1, 3), [[1, 15, 3], [1, 18, 3]])   # Le fichier graph1.path.out montre 
+        # que le chemin le plyus court entre 1 et 3 passe par 15 mais si on regarde les différentes 
+        # arêtes on voit qu'il y a un chemin de même longueur passant par 18, il y a donc deux 
+        # possibilités de chemin le plus court allant de 1 à 3
+    def test_graph1(self):
+        g = Graph.graph_from_file("input/graph1.in")
+        print(g)
+        self.assertIn(g.bfs(1, 3), [[1, 15, 3], [1, 18, 3]]) 
 if __name__ == '__main__':
     unittest.main()
