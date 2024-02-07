@@ -1,5 +1,13 @@
 from grid import Grid
 
+
+def calcul_coordonnees(x, m, n):
+    i = x // n
+    j = x % n
+    return (i, j)
+    # cette fonction permet de déterminer les coordonnées d'un chiffre (compris entre 1 et m*n) 
+    # dans la grille
+
 class Solver():
 
     """
@@ -19,39 +27,34 @@ class Solver():
 
     """
 
-    def trouver(self, k):
-        for i in range(Grid.m):
-            for j in range(Grid.n):
-                if self.state[i][j] == k:
+    def trouver(self, k, g):
+        for i in range(g.m):
+            for j in range(g.n):
+                if g.state[i][j] == k:
                     return (i, j)
     # cette fonction permet de trouver un chiffre dans la grille, afin de connaître ses coordonnées, pour ensuite savoir comment le déplacer jusqu'à la bonne place
 
-    def calcul_coordonnées(x, m, n):
-        i = x // n
-        j = x % n
-        return (i, j)
-    # cette fonction permet de déterminer les coordonnées d'un chiffre (compris entre 1 et m*n) 
-    # dans la grille
 
 
-    def get_solution(self, m, n):
+
+    def get_solution(self, m, n, g):
         changements = []
         for l in range(1, m*n+1):
-            i1, j1 = Solver.trouver(self, l)
-            i, j = Solver.calcul_coordonnées(l, m, n)
-            while Solver.trouver(l) != Solver.calcul_coordonnees(l, m, n):
+            i1, j1 = self.trouver(l, g)
+            i, j = calcul_coordonnees(l, m, n)
+            while self.trouver(l, g) != calcul_coordonnees(l, m, n):
                 if i1 > i:
-                    Grid.swap(Solver.trouver(l), ((Solver.trouver(self, l)[0])-1, Solver.trouver(l)[1]))
-                    changements.append((Solver.trouver(l), ((Solver.trouver(l)[0])+1, Solver.trouver(l)[1])))
+                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1]))
+                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])+1, self.trouver(l, g)[1])))
                 elif i1 < i:
-                    Grid.swap(Solver.trouver(l), ((Solver.trouver(l)[0])+1, Solver.trouver(l)[1]))
-                    changements.append((Solver.trouver(l), ((Solver.trouver(l)[0])-1, Solver.trouver(l)[1])))
+                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0])+1, self.trouver(l, g)[1]))
+                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1])))
                 if j1 > j:
-                    Grid.swap(Solver.trouver(l), ((Solver.trouver(l)[0]), Solver.trouver(self, l)[1]-1))
-                    changements.append((Solver.trouver(l), ((Solver.trouver(l)[0])-1, Solver.trouver(l)[1]-1)))
+                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0]), self.trouver(l, g)[1]-1))
+                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l)[1]-1)))
                 elif j1 < j:
-                    Grid.swap(Solver.trouver(l), ((Solver.trouver(l)[0]), Solver.trouver(l)[1]+1))
-                    changements.append((Solver.trouver(l), ((Solver.trouver(l)[0])-1, Solver.trouver(l)[1]+1))) 
+                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0]), self.trouver(l, g)[1]+1))
+                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1]+1)))
             return changements
 
 
@@ -59,8 +62,3 @@ class Solver():
         Solves the grid and returns the sequence of swaps at the format
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        # NOTE: you can add other methods and subclasses as much as necessary. The only thing 
-        # imposed is the format of the solution returned.
-        raise NotImplementedError
-

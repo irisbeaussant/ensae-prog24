@@ -1,8 +1,8 @@
 # This will work if ran from the root folder ensae-prog24
-import sys 
+import sys
 sys.path.append("swap_puzzle/")
 
-import unittest 
+import unittest
 from grid import Grid
 
 class Test_GridLoading(unittest.TestCase):
@@ -11,6 +11,7 @@ class Test_GridLoading(unittest.TestCase):
         self.assertEqual(g.m, 4)
         self.assertEqual(g.n, 2)
         self.assertEqual(g.state, [[1, 2], [3, 4], [5, 6], [8, 7]])
+
 
 if __name__ == '__main__':
     unittest.main()

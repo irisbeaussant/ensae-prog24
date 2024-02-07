@@ -1,8 +1,8 @@
 # This will work if ran from the root folder ensae-prog24
-import sys 
+import sys
 sys.path.append("swap_puzzle/")
 
-import unittest 
+import unittest
 from solver import Solver
 from grid import Grid
 
@@ -10,7 +10,8 @@ from grid import Grid
 class Test_solveurNaif(unittest.TestCase):
     def test_solveur(self):
         grid = Grid.grid_from_file("input/grid1.in")
-        reponse = grid.get_solution(grid.m, grid.n)
+        solver = Solver()
+        reponse = solver.get_solution(grid.m, grid.n, grid)
         self.assertEqual(reponse, [((3, 0), (3, 1))])
 
 
