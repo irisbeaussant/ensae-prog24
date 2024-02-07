@@ -193,9 +193,17 @@ def graphe_des_grilles(self):  # On construit le graphe de tous les états possi
 
 def chemin_le_plus_court(self, etatinitial, etatfinal):
     return Graph.bfs(etatinitial, etatfinal)
+    # on obtient le chemin le plus court pour arriver à la grille ordonnée, donc les swap à faire
 
 
+""" 
+Question 8
+Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination, 
+il faut le construire au fur et à mesure de son parcours
+"""
 
+def bfs_bis(self, src, dst):
+    
 
 
 
