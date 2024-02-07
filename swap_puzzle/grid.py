@@ -1,14 +1,17 @@
+from itertools import permutations
+import numpy as np
+import random
+
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
 
-import random
 
 class Grid():
     """
-    A class representing the grid from the swap puzzle. It supports rectangular grids. 
+    A class representing the grid from the swap puzzle. It supports rectangular grids.
 
-    Attributes: 
+    Attributes:
     -----------
     m: int
         Number of lines in the grid
@@ -19,12 +22,12 @@ class Grid():
         Note: lines are numbered 0..m and columns are numbered 0..n.
     """
     
-    def __init__(self, m, n, initial_state = []):
+    def __init__(self, m, n, initial_state=[]):
         """
         Initializes the grid.
 
-        Parameters: 
-        -----------
+        Parameters:
+        ----------
         m: int
             Number of lines in the grid
         n: int
@@ -35,19 +38,19 @@ class Grid():
         self.m = m
         self.n = n
         if not initial_state:
-            initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
+            initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]           
         self.state = initial_state
 
-    def __str__(self): 
+    def __str__(self):
         """
         Prints the state of the grid as text.
         """
         output = f"The grid is in the following state:\n"
-        for i in range(self.m): 
+        for i in range(self.m):
             output += f"{self.state[i]}\n"
         return output
 
-    def __repr__(self): 
+    def __repr__(self):
         """
         Returns a representation of the grid with number of rows and columns.
         """
@@ -57,9 +60,9 @@ class Grid():
         """
         Checks is the current state of the grid is sorted and returns the answer as a boolean.
         """
-        for i in range (self.m):
-            for j in range (self.n-1):
-                if self.state[i][j]>self.state[i][j+1]:
+        for i in range(self.m):
+            for j in range(self.n-1):
+                if self.state[i][j] > self.state[i][j+1]:
                     return False
         return True
 
@@ -67,54 +70,56 @@ class Grid():
         testé : ok
         """
 
-        
-
     def swap(self, cell1, cell2):
         """
-        Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
+        Implements the swap operation between two cells. Raises an exception if the swap is 
+        not allowed.
 
-        Parameters: 
+        Parameters:
         -----------
         cell1, cell2: tuple[int]
-            The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
+            The two cells to swap. They must be in the format (i, j) where i is the line and j the 
+            column number of the cell.
         """
-        if abs(cell1[0]-cell2[0])!=1 and abs(cell1[1]-cell2[1])!=1:
+        if abs(cell1[0]-cell2[0]) != 1 and abs(cell1[1]-cell2[1]) != 1:
             return "pas le droit d'échanger"
         else:
-            (self.state[cell1[0]][cell1[1]],self.state[cell2[0]][cell2[1]])=(self.state[cell2[0]][cell2[1]],self.state[cell1[0]][cell1[1]])
+            (self.state[cell1[0]][cell1[1]], self.state[cell2[0]][cell2[1]]) = (self.state[cell2[0]][cell2[1]], self.state[cell1[0]][cell1[1]])
         
         """
         testé : ok
         """
        
-
     def swap_seq(self, cell_pair_list):
         """
-        Executes a sequence of swaps. 
+        Executes a sequence of swaps.
 
-        Parameters: 
+        Parameters:
         -----------
         cell_pair_list: list[tuple[tuple[int]]]
-            List of swaps, each swap being a tuple of two cells (each cell being a tuple of integers). 
+            List of swaps, each swap being a tuple of two cells (each cell being a tuple of
+            integers).
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
+
         for i in range(len(cell_pair_list)):
-            Grid.swap(self,cell_pair_list[i][0],cell_pair_list[i][1])
+            self.swap(cell_pair_list[i][0], cell_pair_list[i][1])
+
         """
         testé : ok
-        """    
-
+        """
 
     @classmethod
-    def grid_from_file(cls, file_name): 
+    def grid_from_file(cls, file_name):
         """
-        Creates a grid object from class Grid, initialized with the information from the file file_name.
+        Creates a grid object from class Grid, initialized with the information from the file
+         file_name.
         
-        Parameters: 
+        Parameters:
         -----------
         file_name: str
-            Name of the file to load. The file must be of the format: 
-            - first line contains "m n" 
+            Name of the file to load. The file must be of the format:
+            - first line contains "m n"
             - next m lines contain n integers that represent the state of the corresponding cell
 
         Output:
@@ -127,15 +132,15 @@ class Grid():
             initial_state = [[] for i_line in range(m)]
             for i_line in range(m):
                 line_state = list(map(int, file.readline().split()))
-                if len(line_state) != n: 
+                if len(line_state) != n:
                     raise Exception("Format incorrect")
                 initial_state[i_line] = line_state
             grid = Grid(m, n, initial_state)
         return grid
 
 
-import numpy as np
-import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.pyplot as plt
 
 
 
@@ -145,26 +150,23 @@ import matplotlib.pyplot as plt
      img = ax.imshow(arr, cmap='viridis')
      plt.show()
 
-    
-        """
-        Question 6 :
-        Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non mutable, par exemple un frozenset.
-        """
-from itertools import permutations
-import numpy as np
+    """
+    Question 6 :
+    Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non 
+    mutable, par exemple un frozenset.
+    """
 
-    def noeuds(m,n):
-        l=[k for k in range (1,(m*n+1))] #on crée la liste de tous les nombres contenus dans la grille
-        perm=list(permutations(l,m*n))
-        toutes_grilles=[]
+    def noeuds(self, m, n):
+        l = [k for k in range(1, (m*n+1))]  # on crée la liste de tous les nombres contenus dans la grille
+        perm = list(permutations(l, m*n))
+        toutes_grilles = []
         for i in perm:
-            i=np.array(i).reshape((m,n))
+            i = np.array(i).reshape((m, n))
             toutes_grilles.append(i)
         return toutes_grilles
 
-
-    def hash(grid): #rend une grille hashable
-        gridbis=frozenset(grid)
+    def hash(self, grid):  # rend une grille hashable
+        gridbis = frozenset(grid)
         return gridbis
 
 

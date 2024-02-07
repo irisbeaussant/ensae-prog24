@@ -137,101 +137,131 @@ class Graph:
 
 
 
-""" 
-Question 7
-""" 
-from grid import Grid
+    """ 
+    Question 7
 
-from itertools import permutations
-import numpy as np
+    nombre de noeuds :
+    nombre d'arêtes du graphe : 
+    complexité de l'algorithme : 
+    comparaison avec la méthode naïve :
 
+    """ 
+    from grid import Grid
 
-def comp_mat(self, M, N):   # M et N sont de mêmes dimensions
-    for i in range(len(M)):
-        for j in range(len(M[0])):
-            if M[i, j] != N[i, j]:
-                return False
-    return True  # signifie que les deux matrices sont identiques
+    from itertools import permutations
+    import numpy as np
 
 
-def dans_liste(self, M, N, liste):
-    for (i, j) in liste:
-        if comp_mat(M, i) and comp_mat(N, j):
-            return True
-    return False
-# Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
+    def comp_mat(self, M, N):   # M et N sont de mêmes dimensions
+        for i in range(len(M)):
+            for j in range(len(M[0])):
+                if M[i, j] != N[i, j]:
+                    return False
+        return True  # signifie que les deux matrices sont identiques
 
 
-def liste_noeuds_a_relier(self, m, n):  # on cherche quels noeuds sont voisins dans le graphe
-    L = []
-    for M1 in Grid.noeuds(m, n):
-        for M2 in Grid.noeuds(m, n):
-            if not comp_mat(M1, M2):
-                for i in range(m):
-                    for j in range(n):
-                        if not dans_liste(M1, M2, L) and not dans_liste(M2, M1, L):
-                            #  if (M1,M2) not in L and (M2,M1) not in L :
-                            if i+1 < m and (M1[i, j] == M2[i+1, j]):
-                                L.append((M1, M2))
-                            if i-1 >= 0 and (M1[i, j] == M2[i-1, j]):
-                                L.append((M1, M2))
-                            if j+1 < n and (M1[i, j] == M2[i, j+1]):
-                                L.append((M1, M2))
-                            if j-1 >= 0 and (M1[i, j] == M2[i, j-1]):
-                                L.append((M1, M2))
-    return L
+    def dans_liste(self, M, N, liste):
+        for (i, j) in liste:
+            if comp_mat(M, i) and comp_mat(N, j):
+                return True
+        return False
+    # Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
 
 
-def graphe_des_grilles(self):  # On construit le graphe de tous les états possibles de la grille
-    graphe_grilles = {}
-    for (i, j) in liste_noeuds_a_relier(Grid.m, Grid.n):
-        ibis = Grid.hash(i)
-        jbis = Grid.hash(j)
-        Graph.add_edge(ibis, jbis)
-    return graphe_grilles
+    def liste_noeuds_a_relier(self, m, n):  # on cherche quels noeuds sont voisins dans le graphe
+        L = []
+        for M1 in Grid.noeuds(m, n):
+            for M2 in Grid.noeuds(m, n):
+                if not comp_mat(M1, M2):
+                    for i in range(m):
+                        for j in range(n):
+                            if not dans_liste(M1, M2, L) and not dans_liste(M2, M1, L):
+                                #  if (M1,M2) not in L and (M2,M1) not in L :
+                                if i+1 < m and (M1[i, j] == M2[i+1, j]):
+                                    L.append((M1, M2))
+                                if i-1 >= 0 and (M1[i, j] == M2[i-1, j]):
+                                    L.append((M1, M2))
+                                if j+1 < n and (M1[i, j] == M2[i, j+1]):
+                                    L.append((M1, M2))
+                                if j-1 >= 0 and (M1[i, j] == M2[i, j-1]):
+                                    L.append((M1, M2))
+        return L
 
 
-def chemin_le_plus_court(self, etatinitial, etatfinal):
-    return Graph.bfs(etatinitial, etatfinal)
-    # on obtient le chemin le plus court pour arriver à la grille ordonnée, donc les swap à faire
+    def graphe_des_grilles(self):  # On construit le graphe de tous les états possibles de la grille
+        graphe_grilles = {}
+        for (i, j) in liste_noeuds_a_relier(Grid.m, Grid.n):
+            ibis = Grid.hash(i)
+            jbis = Grid.hash(j)
+            Graph.add_edge(ibis, jbis)
+        return graphe_grilles
 
 
-""" 
-Question 8
-Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination, 
-il faut le construire au fur et à mesure de son parcours
-"""
+    def chemin_le_plus_court(self, etatinitial, etatfinal):
+        def bfs(self, src, dst): 
+            liste=[src]
+            sommets_visites=[]
+            parents={}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
+            while len(liste)!=0: 
+                x=liste.pop()
+                # x correspond au sommet sur lequel on est actuellement
+                if x == dst: # si on arrive à la destination, il est inutile de parcourir davantage de sommets
+                    break 
+                if x not in sommets_visites:
+                    sommets_visites.append(x)
+                for voisin in Graph.graphe_des_grilles[x]:
+                    if voisin not in sommets_visites: 
+                        liste.append(voisin)
+                        parents[voisin] = x
+                        sommets_visites.append(voisin)
+            chemin = [dst]
+            y = dst
+            while y != src:
+                y = parents[y]
+                chemin = [y] + chemin
+            return chemin
 
-def bfs_bis(self, src, dst):
+        # on obtient le chemin le plus court pour arriver à la grille ordonnée, donc les swap à faire
+
+
+    """ 
+    Question 8
+    Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination, 
+    il faut le construire au fur et à mesure de son parcours
+    """
+
+    def bfs_bis(self, src, dst):
+            liste=[src]
+            sommets_visites=[]
+            parents={}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
+
+            g = {}  # on initialise le dictionnaire du graphe
     
-
-
-
-
-
-        
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            while len(liste)!=0: 
+                x=liste.pop()
+            
+                if x == dst:
+                    break
+                if x not in sommets_visites:
+                    if x not in g:
+                        g[x]=[]    # on crée le dictionnaire au fur et à mesure qu'on en a besoin
+                        for (i,j) in Graph.liste_noeuds_a_relier(Grid.m, Grid.m):
+                            if Graph.comp_mat(i,x):
+                                g[x].append(j)
+                            elif Graph.comp_mat(j,x):
+                                g[x].append(i) 
+                    sommets_visites.append(x)
+                for voisin in g[x]:
+                    if voisin not in sommets_visites: 
+                        liste.append(voisin)
+                        parents[voisin] = x
+                        sommets_visites.append(voisin)
+            chemin = [dst]
+            y = dst
+            while y != src:
+                y = parents[y]
+                chemin = [y] + chemin
+            return chemin
 
     @classmethod
     def graph_from_file(cls, file_name):

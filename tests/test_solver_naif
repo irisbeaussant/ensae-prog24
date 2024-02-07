@@ -3,13 +3,15 @@ import sys
 sys.path.append("swap_puzzle/")
 
 import unittest 
+from solver import Solver
 from grid import Grid
 
+
 class Test_solveurNaif(unittest.TestCase):
-    def test_grid1(self):
+    def test_solveur(self):
         grid = Grid.grid_from_file("input/grid1.in")
-        grid.get_solution(self,4,2)
-        self.assertEqual(grid.state, [[1, 2], [3, 4], [5, 6], [7, 8]])
+        reponse = grid.get_solution(grid.m, grid.n)
+        self.assertEqual(reponse, [((3, 0), (3, 1))])
 
 
 if __name__ == '__main__':

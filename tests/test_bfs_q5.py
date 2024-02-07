@@ -16,7 +16,6 @@ class Test_bfs(unittest.TestCase):
 
     def test_graph2(self):
         g = Graph.graph_from_file("input/graph2.in")
-        print(g)
         self.assertEqual(g.bfs(2, 7), [2, 17, 7])
 
 
