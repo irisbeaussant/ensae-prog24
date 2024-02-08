@@ -1,0 +1,22 @@
+# This will work if ran from the root folder ensae-prog24
+
+import sys
+sys.path.append("swap_puzzle/")
+
+
+import unittest
+from grid import Grid
+import solver
+
+class Test_calcul_coordonnees(unittest.TestCase):
+    def test_calcul1(self):
+        x = solver.calcul_coordonnees(5, 3, 2)
+        self.assertEqual(x, (2, 0))
+
+    def test_calcul2(self):
+        x = solver.calcul_coordonnees(5, 5, 4)
+        self.assertEqual(x, (1, 0))
+
+
+if __name__ == '__main__':
+    unittest.main()

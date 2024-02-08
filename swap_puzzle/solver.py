@@ -3,9 +3,9 @@ from grid import Grid
 
 def calcul_coordonnees(x, m, n):
     i = x // n
-    j = x % n
+    j = x % n -1
     return (i, j)
-    # cette fonction permet de déterminer les coordonnées d'un chiffre (compris entre 1 et m*n) 
+    # cette fonction permet de déterminer les coordonnées d'un chiffre (compris entre 1 et m*n)
     # dans la grille
 
 class Solver():
@@ -39,22 +39,25 @@ class Solver():
 
     def get_solution(self, m, n, g):
         changements = []
-        for l in range(1, m*n+1):
-            i1, j1 = self.trouver(l, g)
-            i, j = calcul_coordonnees(l, m, n)
-            while self.trouver(l, g) != calcul_coordonnees(l, m, n):
-                if i1 > i:
-                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1]))
-                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])+1, self.trouver(l, g)[1])))
-                elif i1 < i:
-                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0])+1, self.trouver(l, g)[1]))
-                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1])))
-                if j1 > j:
-                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0]), self.trouver(l, g)[1]-1))
-                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l)[1]-1)))
-                elif j1 < j:
-                    Grid.swap(g, self.trouver(l, g), ((self.trouver(l, g)[0]), self.trouver(l, g)[1]+1))
-                    changements.append((self.trouver(l, g), ((self.trouver(l, g)[0])-1, self.trouver(l, g)[1]+1)))
+        for k in range(1, m*n+1):
+            i, j = calcul_coordonnees(k, m, n)
+            while self.trouver(k, g) != calcul_coordonnees(k, g, n):
+                if self.trouver(k, g)[0] > i:
+                    x = self.trouver(k, g)[0]  # on note x afin de raccourcir les lignes
+                    g.swap(self.trouver(k, g), ((x)-1, self.trouver(k, g)[1]))
+                    changements.append((self.trouver(k, g), ((x)+1, self.trouver(k, g)[1])))
+                elif self.trouver(k, g)[0] < i:
+                    x = self.trouver(k, g)[0]
+                    g.swap(self.trouver(k, g), ((x+1, self.trouver(k, g)[1])))
+                    changements.append((self.trouver(k, g), ((x)-1, self.trouver(k, g)[1])))
+                if self.trouver(k, g)[1] > j:
+                    x = self.trouver(k, g)[0]
+                    g.swap(self.trouver(k, g), ((x), self.trouver(k, g)[1]-1))
+                    changements.append((self.trouver(k, g), ((x)-1, self.trouver(k)[1]-1)))
+                elif self.trouver(k, g)[1] < j:
+                    x = self.trouver(k, g)[0]
+                    g.swap(self.trouver(k, g), ((x), self.trouver(k, g)[1]+1))
+                    changements.append((self.trouver(k, g), ((x)-1, self.trouver(k, g)[1]+1)))
             return changements
 
 
