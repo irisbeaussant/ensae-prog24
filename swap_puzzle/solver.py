@@ -53,12 +53,12 @@ class Solver():
                 if self.trouver(k, g)[1] > j:
                     x = self.trouver(k, g)[0]
                     g.swap(self.trouver(k, g), ((x), self.trouver(k, g)[1]-1))
-                    changements.append((self.trouver(k, g), ((x)-1, self.trouver(k)[1]-1)))
+                    changements.append((self.trouver(k, g), ((x)-1, self.trouver(k, g)[1]-1)))
                 elif self.trouver(k, g)[1] < j:
                     x = self.trouver(k, g)[0]
                     g.swap(self.trouver(k, g), ((x), self.trouver(k, g)[1]+1))
                     changements.append((self.trouver(k, g), ((x)-1, self.trouver(k, g)[1]+1)))
-            return changements
+        return changements
 
 
         """
