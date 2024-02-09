@@ -230,27 +230,35 @@ class Grid():
                                     L.append((M1, M2))
         return L
 
+    # méthod BFS adaptée aux grilles
+    # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
 
-
-
-    def chemin_le_plus_court(self, etatinitial, etatfinal):  # méthod BFS adaptée aux grilles
+    def chemin_le_plus_court(self, etatinitial, etatfinal):
         graphe_grilles = Graph(Grid.noeuds(self))
         for (i, j) in self.liste_noeuds_a_relier():
             graphe_grilles.add_edge(i, j)
         solution = graphe_grilles.bfs(etatinitial, etatfinal)
         return solution
+    # swaps_a_faire complète le résultat de chemin_le_plus_court en renvoyant les swaps nécessaires
+    # pour réaliser ce chemin
 
-    #def swaps_a_faire(self, etatinitial, etatfinal):
-        #liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
+    def swaps_a_faire(self, etatinitial, etatfinal):
+        liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
 
-        #for i in range(len(liste_grilles)):
-           # M = liste_grilles[i]
-            #for j in G.m:
-               # for k in i.n:
-               #     if M[j,k] == 
-
-
-
+        for i in range(len(liste_grilles)):
+            swaps = []
+            M = liste_grilles[i]
+            for j in i.m:
+                for k in i.n:
+                    if (k+1) < i.n and M[j, k] == liste_grilles[i+1][j][k+1]:
+                        swaps.append(M(j, k), liste_grilles[i+1][j][k+1])
+                    if (k-1) >= 0 and M[j, k] == liste_grilles[i+1][j][k-1]:
+                        swaps.append(M(j, k), liste_grilles[i+1][j][k-1])
+                    if (j+1) < i.m and M[j, k] == liste_grilles[i+1][j+1][k]:
+                        swaps.append(M(j, k), liste_grilles[i+1][j+1][k])
+                    if (j-1) >= 0 and M[j, k] == liste_grilles[i+1][j-1][k]:
+                        swaps.append(M(j, k), liste_grilles[i+1][j-1][k])
+        return swaps
 
     def bfs_bis(self, src, dst):
         file = Queue()

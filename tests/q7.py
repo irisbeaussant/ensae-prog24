@@ -5,8 +5,6 @@ import sys
 sys.path.append("swap_puzzle/")
 
 
-
-
 import unittest
 from grid import Grid
 
