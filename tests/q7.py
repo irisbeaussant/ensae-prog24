@@ -8,7 +8,6 @@ sys.path.append("swap_puzzle/")
 
 
 import unittest
-from graph import Graph
 from grid import Grid
 
 
@@ -16,7 +15,7 @@ class Test_Cheminlepluscourt(unittest.TestCase):
     def test_cheminlepluscourt(self):
         A = Grid.grid_from_file("input/grid5.in")
         B = [[1, 2], [3, 4]]
-        chemin = Graph.chemin_le_plus_court(Graph, A, B)
+        chemin = A.chemin_le_plus_court(A, B)
         self.assertEqual(chemin, [A, [[1, 2], [4, 3]], B])
 
 

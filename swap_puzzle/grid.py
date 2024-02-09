@@ -1,7 +1,9 @@
 from itertools import permutations
 import numpy as np
 import random
-
+from itertools import permutations
+import matplotlib as plt
+from graph import Graph
 
 """
 This is the grid module. It contains the Grid class and its associated methods.
@@ -110,16 +112,12 @@ class Grid():
             integers).
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
-
-
         for i in range(len(cell_pair_list)):
             self.swap(cell_pair_list[i][0], cell_pair_list[i][1])
-
 
         """
         testé : ok
         """
-
 
     @classmethod
     def grid_from_file(cls, file_name):
@@ -151,36 +149,92 @@ class Grid():
             grid = Grid(m, n, initial_state)
         return grid
 
+    """ 
+    Question 4
+    Représentation graphique
 
-    import numpy as np
-    import matplotlib.pyplot as plt
+    """
 
-    def representation_graphique(grid):
-        arr = np.array(grid)
-        fig, ax = plt.subplots()
-        ax.imshow(arr)
-        ax.axis('off')
+    def representation_graphique(self):
+        grille = np.array([[0 for i in range(self.n)] for j in range(self.m)])
+        plt.imshow(grille)
+        for i in range(self.state.shape[0]):
+            for j in range(self.state.shape[1]):
+                plt.text(j, i, str(self.state[i][j]))
+        plt.colorbar()
         plt.show()
 
+    def representation_graphique_bis(self):
+        grille = self.state
+        fig, ax = plt.subplots()
+        ax.set_axis_off()
+        ax.table(cellText=grille, cellLock='center')
+        plt.show()
 
     """
     Question 6 :
     Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non
-    mutable, par exemple un frozenset.
+    mutable, on les transforme en tuples
     """
 
-
-    def noeuds(self, m, n):
+    def noeuds(self):  # self est un grid
+        m = self.m
+        n = self.n
         liste = [k for k in range(1, (m*n+1))]  # on crée la liste de tous les nombres contenus
         # dans la grille
-        perm = list(permutations(liste, m*n))
+        perm = tuple(permutations(liste))  # hashable
         toutes_grilles = []
         for i in perm:
             i = np.array(i).reshape((m, n))
+            i = tuple(tuple(element) for element in i)
             toutes_grilles.append(i)
         return toutes_grilles
 
+    @staticmethod
+    def comp_mat(M, N):   # M et N sont de mêmes dimensions
+        for i in range(len(M)):
+            for j in range(len(M[0])):
+                if M[i][j] != N[i][j]:
+                    return False
+        return True  # signifie que les deux matrices sont identiques
 
-    def hash(self, grid):  # rend une grille hashable
-        gridbis = frozenset(grid)
-        return gridbis
+    @staticmethod
+    def dans_liste(M, N, liste):
+        for (i, j) in liste:
+            if Grid.comp_mat(M, i) and Grid.comp_mat(N, j):
+                return True
+        return False
+    # Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
+
+    def liste_noeuds_a_relier(self):  # on cherche quels noeuds sont voisins dans le graphe
+        m = self.m            # self est un grid
+        n = self.n
+        L = []
+        for M1 in self.noeuds():
+            M11 = [list(t) for t in M1]
+            for M2 in self.noeuds():
+                M21 = [list(t) for t in M2]
+                if not Grid.comp_mat(M11, M21):
+                    for i in range(m):
+                        for j in range(n):
+                            if not Grid.dans_liste(M11, M21, L) and not Grid.dans_liste(M21, M11, L):
+                                #  if (M1,M2) not in L and (M2,M1) not in L :
+                                if i+1 < m and (M1[i][j] == M2[i+1][j]):
+                                    L.append((M1, M2))
+                                if i-1 >= 0 and (M1[i][j] == M2[i-1][j]):
+                                    L.append((M1, M2))
+                                if j+1 < n and (M1[i][j] == M2[i][j+1]):
+                                    L.append((M1, M2))
+                                if j-1 >= 0 and (M1[i][j] == M2[i][j-1]):
+                                    L.append((M1, M2))
+        return L
+
+
+
+
+    def chemin_le_plus_court(self, etatinitial, etatfinal):  # méthod BFS adaptée aux grilles
+        graphe_grilles = Graph(Grid.noeuds(self))
+        for (i, j) in self.liste_noeuds_a_relier():
+            graphe_grilles.add_edge(i, j)
+        solution = graphe_grilles.bfs(etatinitial, etatfinal)
+        return solution

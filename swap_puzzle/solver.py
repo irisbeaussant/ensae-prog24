@@ -1,8 +1,6 @@
 from grid import Grid
 
 
-
-
 def calcul_coordonnees(x, m, n):
     i = (x-1) // n
     j = (x-1) % n
@@ -14,9 +12,9 @@ def calcul_coordonnees(x, m, n):
 class Solver():
 
 
-   """
-   A solver class, to be implemented.
-   """
+    """
+      A solver class, to be implemented.
+    """
 
 
     """
@@ -75,9 +73,9 @@ class Solver():
 
 
 
-       """
-       Solves the grid and returns the sequence of swaps at the format
-       [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
-       """
+        """
+        Solves the grid and returns the sequence of swaps at the format
+         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
+        """
 
 

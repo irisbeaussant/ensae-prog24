@@ -1,7 +1,11 @@
 """ 
 This is the graph module. It contains a minimalistic Graph class.
 """
+from queue import Queue
 
+
+from itertools import permutations
+import numpy as np
 
 class Graph:
     """
@@ -83,7 +87,6 @@ class Graph:
             self.nb_nodes += 1
             self.nodes.append(node2)
 
-
         self.graph[node1].append(node2)
         self.graph[node2].append(node1)
         self.nb_edges += 1
@@ -93,7 +96,6 @@ class Graph:
         """
         Question 5 - méthode BFS
         """
-
 
     def bfs(self, src, dst):
         """
@@ -113,21 +115,13 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """
-        liste = [src]
+        file = Queue()
+        file.put(src)
         sommets_visites = []
         parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
-
-        g = {}  # on crée un dictionnaire contenant les sommets comme clés et leurs voisins comme valeurs
-        for edge in self.edges:
-            sommet1, sommet2 = edge
-            if sommet1 not in g:
-                g[sommet1] = []
-            if sommet2 not in g:
-                g[sommet2] = []
-            g[sommet1] += [sommet2]
-            g[sommet2] += [sommet1]
-        while len(liste) != 0:
-            x = liste.pop()
+        g = self.graph
+        while file:
+            x = file.get()
             # x correspond au sommet sur lequel on est actuellement
             if x == dst:  # si on arrive à la destination, il est inutile de parcourir davantage de sommets
                 break
@@ -135,7 +129,7 @@ class Graph:
                 sommets_visites.append(x)
             for voisin in g[x]:
                 if voisin not in sommets_visites:
-                    liste.append(voisin)
+                    file.put(voisin)
                     parents[voisin] = x
                     sommets_visites.append(voisin)
         chemin = [dst]
@@ -157,46 +151,49 @@ class Graph:
 
 
     """
-    from grid import Grid
+    
 
 
-    from itertools import permutations
-    import numpy as np
+    
 
-    def comp_mat(self, M, N):   # M et N sont de mêmes dimensions
-        for i in range(len(M)):
-            for j in range(len(M[0])):
-                if M[i, j] != N[i, j]:
-                    return False
-        return True  # signifie que les deux matrices sont identiques
+    #@staticmethod
+    #def comp_mat(M, N):   # M et N sont de mêmes dimensions
+     #   for i in range(len(M)):
+      #      for j in range(len(M[0])):
+       #         if M[i, j] != N[i, j]:
+        #            return False
+       # return True  # signifie que les deux matrices sont identiques
 
-    def dans_liste(self, M, N, liste):
-        for (i, j) in liste:
-            if self.comp_mat(Graph, M, i) and self.comp_mat(Graph, N, j):
-                return True
-        return False
+    #@staticmethod
+    #def dans_liste(M, N, liste):
+     #   for (i, j) in liste:
+      #      if Graph.comp_mat(M, i) and Graph.comp_mat(N, j):
+       #         return True
+       # return False
     # Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
 
-    from grid import Grid
+    
 
-    def liste_noeuds_a_relier(self, m, n, g):  # on cherche quels noeuds sont voisins dans le graphe
-        L = []
-        for M1 in g.noeuds(m, n):
-            for M2 in g.noeuds(m, n):
-                if not Graph.comp_mat(self, M1, M2):
-                    for i in range(m):
-                        for j in range(n):
-                            if not Graph.dans_liste(Graph, M1, M2, L) and not Graph.dans_liste(Graph, M2, M1, L):
-                                #  if (M1,M2) not in L and (M2,M1) not in L :
-                                if i+1 < m and (M1[i, j] == M2[i+1, j]):
-                                    L.append((M1, M2))
-                                if i-1 >= 0 and (M1[i, j] == M2[i-1, j]):
-                                    L.append((M1, M2))
-                                if j+1 < n and (M1[i, j] == M2[i, j+1]):
-                                    L.append((M1, M2))
-                                if j-1 >= 0 and (M1[i, j] == M2[i, j-1]):
-                                    L.append((M1, M2))
-        return L
+    #def liste_noeuds_a_relier(self,m,n ):  # on cherche quels noeuds sont voisins dans le graphe
+     #   m=self.m
+      #  n=self.n
+       # L = []
+        #for M1 in g.noeuds(m, n):
+         #   for M2 in g.noeuds(m, n):
+          #      if not Graph.comp_mat(self, M1, M2):
+           #         for i in range(m):
+            #            for j in range(n):
+             #               if not Graph.dans_liste(Graph, M1, M2, L) and not Graph.dans_liste(Graph, M2, M1, L):
+                #                #  if (M1,M2) not in L and (M2,M1) not in L :
+               #                 if i+1 < m and (M1[i, j] == M2[i+1, j]):
+              #                      L.append((M1, M2))
+                 #               if i-1 >= 0 and (M1[i, j] == M2[i-1, j]):
+                 #                   L.append((M1, M2))
+                  #              if j+1 < n and (M1[i, j] == M2[i, j+1]):
+                   #                 L.append((M1, M2))
+                    #            if j-1 >= 0 and (M1[i, j] == M2[i, j-1]):
+                     #               L.append((M1, M2))
+        #return L
 
 
    # def graphe_des_grilles(self, g):  # construction du graphe de tous les états de la grille
@@ -207,40 +204,33 @@ class Graph:
        #    graphe_grilles.add_edge(ibis, jbis)
       # return graphe_grilles
 
-
-    def chemin_le_plus_court(self, etatinitial, etatfinal):
-        graphe_grilles = {}
-        for (i, j) in Graph.liste_noeuds_a_relier(self, etatinitial.m, etatinitial.n, etatinitial):
-            ibis = i.tobytes()
-            jbis = j.tobytes()
-            if ibis not in graphe_grilles:
-                graphe_grilles[ibis] = []
-            if jbis not in graphe_grilles:
-                graphe_grilles[jbis] = []
-            graphe_grilles[ibis].append(jbis)
-            graphe_grilles[jbis].append(ibis)
-        liste = [etatinitial]
-        sommets_visites = []
-        parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
-        while len(liste) != 0:
-            x = liste.pop()
-            # x correspond au sommet sur lequel on est actuellement
-            if x == etatfinal:  # si on arrive à la destination, il est inutile de parcourir
-                # davantage de sommets
-                break
-            if x not in sommets_visites:
-                sommets_visites.append(x)
-            for voisin in graphe_grilles[x]:
-                if voisin not in sommets_visites:
-                    liste.append(voisin)
-                    parents[voisin] = x
-                    sommets_visites.append(voisin)
-        chemin = [etatfinal]
-        y = etatfinal
-        while y != etatinitial:
-            y = parents[y]
-            chemin = [y] + chemin
-        return chemin
+    #def chemin_le_plus_court(self, etatinitial, etatfinal):  # méthod BFS adaptée aux grilles
+     #   graphe_grilles = {}
+      #  for (i, j) in Grid.liste_noeuds_a_relier():
+       #     self.add_edge(i, j)
+        #file = Queue()
+       # file.put(etatinitial)
+        #sommets_visites = []
+        #parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
+        #while file:
+         #   x = file.get()
+          #  # x correspond au sommet sur lequel on est actuellement
+           # if x == etatfinal:  # si on arrive à la destination, il est inutile de parcourir
+            #    # davantage de sommets
+             #   break
+            #if x not in sommets_visites:
+             #   sommets_visites.append(x)
+            #for voisin in graphe_grilles[x]:
+             #   if voisin not in sommets_visites:
+              #      file.put(voisin)
+               #     parents[voisin] = x
+                #    sommets_visites.append(voisin)
+        #chemin = [etatfinal]
+        #y = etatfinal
+        #while y != etatinitial:
+          #  y = parents[y]
+           # chemin = [y] + chemin
+        #return chemin
 
 
         # on obtient le chemin le plus court pour arriver à la grille ordonnée, donc les
@@ -253,20 +243,20 @@ class Graph:
     il faut le construire au fur et à mesure de son parcours
     """
 
-    def egal_mat(M, N):
-        for sublist1, sublist2 in zip(M, N):
-            if all(element1 == element2 for element1, element2 in zip(sublist1, sublist2)):
-                return True
+    #def egal_mat(M, N):
+     #   for sublist1, sublist2 in zip(M, N):
+      #      if all(element1 == element2 for element1, element2 in zip(sublist1, sublist2)):
+       #         return True
 
 
     def bfs_bis(self, src, dst):
-        liste = [src]
+        file = Queue
         sommets_visites = []
         parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
         g = {}  # on initialise le dictionnaire du graphe
-        while len(liste) != 0:
+        while file:
             x = liste.pop()
-            x=frozenset(x)
+            x=frozenset()
             if x == dst:
                 break
             if x not in sommets_visites:
