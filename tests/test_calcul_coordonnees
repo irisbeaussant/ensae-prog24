@@ -10,7 +10,7 @@ import solver
 
 class Test_calcul_coordonnees(unittest.TestCase):
     def test_calcul1(self):
-        x = solver.calcul_coordonnees(5, 3, 2)
+        x = solver.calcul_coordonnees(4, 2, 2)
         self.assertEqual(x, (2, 0))
 
     def test_calcul2(self):

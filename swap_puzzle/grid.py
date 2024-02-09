@@ -4,6 +4,7 @@ import random
 from itertools import permutations
 import matplotlib as plt
 from graph import Graph
+from queue import Queue
 
 """
 This is the grid module. It contains the Grid class and its associated methods.
@@ -238,3 +239,47 @@ class Grid():
             graphe_grilles.add_edge(i, j)
         solution = graphe_grilles.bfs(etatinitial, etatfinal)
         return solution
+
+    #def swaps_a_faire(self, etatinitial, etatfinal):
+        #liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
+
+        #for i in range(len(liste_grilles)):
+           # M = liste_grilles[i]
+            #for j in G.m:
+               # for k in i.n:
+               #     if M[j,k] == 
+
+
+
+
+    def bfs_bis(self, src, dst):
+        file = Queue()
+        sommets_visites = []
+        parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
+        g = {}  # on initialise le dictionnaire du graphe
+        while file:
+            x = file.get()
+            if x == dst:
+                break
+            if x not in sommets_visites:
+                if x not in g:
+                    g[x] = []    # on crée le dictionnaire au fur et à mesure qu'on en a besoin
+                    for (i, j) in Grid.liste_noeuds_a_relier(self):
+                        i1 = [list(t) for t in i]
+                        j1 = [list(t) for t in j]
+                        if Grid.comp_mat(i1, j1):
+                            g[x].append(j)
+                        elif Graph.comp_mat(self, j, x):
+                            g[x].append(i)
+                sommets_visites.append(x)
+            for voisin in g[x]:
+                if voisin not in sommets_visites:
+                    file.put(voisin)
+                    parents[voisin] = x
+                    sommets_visites.append(voisin)
+        chemin = [dst]
+        y = dst
+        while y != src:
+            y = parents[y]
+            chemin = [y] + chemin
+        return chemin

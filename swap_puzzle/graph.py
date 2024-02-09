@@ -249,38 +249,7 @@ class Graph:
        #         return True
 
 
-    def bfs_bis(self, src, dst):
-        file = Queue
-        sommets_visites = []
-        parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
-        g = {}  # on initialise le dictionnaire du graphe
-        while file:
-            x = liste.pop()
-            x=frozenset()
-            if x == dst:
-                break
-            if x not in sommets_visites:
-                if x not in g:
-                    g[x] = []    # on crée le dictionnaire au fur et à mesure qu'on en a besoin
-                    for (i, j) in Graph.liste_noeuds_a_relier(self, self.m, self.m, g):
-                        if Graph.comp_mat(self, i, x):
-                            j=frozenset(j)
-                            g[x].append(j)
-                        elif Graph.comp_mat(self, j, x):
-                            i=frozenset(x)
-                            g[x].append(i)
-                sommets_visites.append(x)
-            for voisin in g[x]:
-                if voisin not in sommets_visites:
-                    liste.append(voisin)
-                    parents[voisin] = x
-                    sommets_visites.append(voisin)
-        chemin = [dst]
-        y = dst
-        while y != src:
-            y = parents[y]
-            chemin = [y] + chemin
-        return chemin
+    
 
 
     @classmethod

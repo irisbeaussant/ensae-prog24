@@ -14,9 +14,9 @@ from grid import Grid
 
 class Test_bfsbis(unittest.TestCase):
     def test_bfsbis(self):
-        A = [[1, 3], [4, 2]]
+        A = Grid.grid_from_file("input/grid5.in")
         B = [[1, 2], [3, 4]]
-        chemin = Graph.bfs_bis(A, A, B)
+        chemin = A.bfs_bis(A, B)
         self.assertEqual(chemin, [A, [[1, 2], [4, 3]], B])
 
 
