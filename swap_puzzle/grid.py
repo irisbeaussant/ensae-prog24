@@ -174,7 +174,7 @@ class Grid():
     Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non
     mutable, on les transforme en tuples
 
-    Afin de créer toutes les grilles possible on trouve toutes les permutations
+    Afin de créer toutes les grilles possibles on trouve toutes les permutations
 
     """
 
@@ -229,13 +229,13 @@ class Grid():
                         for j in range(n):
                             if not Grid.dans_liste(M11, M21, L) and not Grid.dans_liste(M21, M11, L):
                                 #  if (M1,M2) not in L and (M2,M1) not in L :
-                                if i+1 < m and (M1[i][j] == M2[i+1][j]):
+                                if i+1 < m and (M1[i][j] == M2[i+1][j]) and (M1[i+1][j] == M2[i][j]):
                                     L.append((M1, M2))
-                                if i-1 >= 0 and (M1[i][j] == M2[i-1][j]):
+                                if i-1 >= 0 and (M1[i][j] == M2[i-1][j]) and (M1[i-1][j] == M2[i][j]):
                                     L.append((M1, M2))
-                                if j+1 < n and (M1[i][j] == M2[i][j+1]):
+                                if j+1 < n and (M1[i][j] == M2[i][j+1]) and (M1[i][j+1] == M2[i][j]):
                                     L.append((M1, M2))
-                                if j-1 >= 0 and (M1[i][j] == M2[i][j-1]):
+                                if j-1 >= 0 and (M1[i][j] == M2[i][j-1]) and (M1[i][j-1] == M2[i][j]):
                                     L.append((M1, M2))
         return L
 
@@ -246,26 +246,32 @@ class Grid():
         graphe_grilles = Graph(Grid.noeuds(self))
         for (i, j) in self.liste_noeuds_a_relier():
             graphe_grilles.add_edge(i, j)
-        solution = graphe_grilles.bfs(etatinitial, etatfinal)
-        return solution
+        src = tuple(tuple(element) for element in etatinitial)
+        dst = tuple(tuple(element) for element in etatfinal)
+        solution = graphe_grilles.bfs(src, dst)
+        sol = [[list(t) for t in G] for G in solution]
+        return sol
     # swaps_a_faire complète le résultat de chemin_le_plus_court en renvoyant les swaps nécessaires
     # pour réaliser ce chemin
 
     def swaps_a_faire(self, etatinitial, etatfinal):
-        liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
-        for i in range(len(liste_grilles)):
+        liste_grilles = Grid.chemin_le_plus_court(self, etatinitial, etatfinal)
+        m = len(etatinitial)
+        n = len(etatinitial[1])
+        for i in range(len(liste_grilles)-1):  # il faut mettre -1 car le dernier élément
+            # ne peut pas être comparé avec l'élément suivant, qui n'existe pas
             swaps = []
             M = liste_grilles[i]
-            for j in i.m:
-                for k in i.n:
-                    if (k+1) < i.n and M[j, k] == liste_grilles[i+1][j][k+1]:
-                        swaps.append(M(j, k), liste_grilles[i+1][j][k+1])
-                    if (k-1) >= 0 and M[j, k] == liste_grilles[i+1][j][k-1]:
-                        swaps.append(M(j, k), liste_grilles[i+1][j][k-1])
-                    if (j+1) < i.m and M[j, k] == liste_grilles[i+1][j+1][k]:
-                        swaps.append(M(j, k), liste_grilles[i+1][j+1][k])
-                    if (j-1) >= 0 and M[j, k] == liste_grilles[i+1][j-1][k]:
-                        swaps.append(M(j, k), liste_grilles[i+1][j-1][k])
+            for j in range(m):
+                for k in range(n):
+                    if (k+1) < n and M[j][k] == liste_grilles[i+1][j][k+1]:
+                        swaps.append(((j, k), (j, k+1)))
+                    if (k-1) >= 0 and M[j][k] == liste_grilles[i+1][j][k-1]:
+                        swaps.append(((j, k), (j, k-1)))
+                    if (j+1) < m and M[j][k] == liste_grilles[i+1][j+1][k]:
+                        swaps.append(((j, k), (j+1, k)))
+                    if (j-1) >= 0 and M[j][k] == liste_grilles[i+1][j-1][k]:
+                        swaps.append(((j, k), (j-1, k)))
         return swaps
 
     """
@@ -306,3 +312,4 @@ class Grid():
             chemin = [y] + chemin
         return chemin
 
+  

@@ -16,8 +16,8 @@ class Test_bfsbis(unittest.TestCase):
     def test_bfsbis(self):
         A = Grid.grid_from_file("input/grid5.in")
         B = [[1, 2], [3, 4]]
-        chemin = A.bfs_bis(A, B)
-        self.assertEqual(chemin, [A, [[1, 2], [4, 3]], B])
+        chemin = A.bfs_bis(A.state, B)
+        self.assertEqual(chemin, [A.state, [[1, 2], [4, 3]], B])
 
 
 if __name__ == '__main__':
