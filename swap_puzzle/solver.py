@@ -11,11 +11,9 @@ def calcul_coordonnees(x, m, n):
 
 class Solver():
 
-
     """
       A solver class, to be implemented.
     """
-
 
     """
     Question 3
@@ -32,20 +30,13 @@ class Solver():
 
     """
 
-
     def trouver(self, k, g):
         for i in range(g.m):
             for j in range(g.n):
                 if g.state[i][j] == k:
                     return (i, j)
-   # cette fonction permet de trouver un chiffre dans la grille, afin de connaître ses coordonnées, pour ensuite savoir comment le déplacer jusqu'à la bonne place
-
-
-
-
-
-
-
+    # cette fonction permet de trouver un chiffre dans la grille, afin de connaître ses coordonnées,
+    # pour ensuite savoir comment le déplacer jusqu'à la bonne place
 
     def get_solution(self, m, n, g):
         changements = []
@@ -69,9 +60,6 @@ class Solver():
                     changements.append((self.trouver(k, g), (x, self.trouver(k, g)[1]+1)))
                     g.swap(self.trouver(k, g), (x, self.trouver(k, g)[1]+1))
         return changements
-
-
-
 
         """
         Solves the grid and returns the sequence of swaps at the format

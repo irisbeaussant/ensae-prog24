@@ -8,6 +8,7 @@ import unittest
 from grid import Grid
 import solver
 
+
 class Test_calcul_coordonnees(unittest.TestCase):
     def test_calcul1(self):
         x = solver.calcul_coordonnees(5, 3, 2)

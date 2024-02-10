@@ -17,9 +17,5 @@ class Test_Cheminlepluscourt(unittest.TestCase):
         self.assertEqual(chemin, [A, [[1, 2], [4, 3]], B])
 
 
-
-
-
-
 if __name__ == '__main__':
    unittest.main()

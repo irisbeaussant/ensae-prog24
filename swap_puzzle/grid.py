@@ -46,7 +46,6 @@ class Grid():
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]          
         self.state = initial_state
 
-
     def __str__(self):
         """
         Prints the state of the grid as text.
@@ -56,13 +55,11 @@ class Grid():
             output += f"{self.state[i]}\n"
         return output
 
-
     def __repr__(self):
         """
         Returns a representation of the grid with number of rows and columns.
         """
         return f"<grid.Grid: m={self.m}, n={self.n}>"
-
 
     def is_sorted(self):
         """
@@ -79,7 +76,6 @@ class Grid():
         testé : ok
         """
 
- 
     def swap(self, cell1, cell2):
         """
         Implements the swap operation between two cells. Raises an exception if the swap is
@@ -150,7 +146,8 @@ class Grid():
             grid = Grid(m, n, initial_state)
         return grid
 
-    """ 
+    """
+
     Question 4
     Représentation graphique
 
@@ -191,6 +188,12 @@ class Grid():
             toutes_grilles.append(i)
         return toutes_grilles
 
+    """
+
+    Question 7
+
+    """
+
     @staticmethod
     def comp_mat(M, N):   # M et N sont de mêmes dimensions
         for i in range(len(M)):
@@ -208,7 +211,7 @@ class Grid():
     # Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
 
     def liste_noeuds_a_relier(self):  # on cherche quels noeuds sont voisins dans le graphe
-        m = self.m            # self est un grid
+        m = self.m            
         n = self.n
         L = []
         for M1 in self.noeuds():
@@ -230,7 +233,7 @@ class Grid():
                                     L.append((M1, M2))
         return L
 
-    # méthod BFS adaptée aux grilles
+    # méthode BFS adaptée aux grilles
     # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
 
     def chemin_le_plus_court(self, etatinitial, etatfinal):
@@ -244,7 +247,6 @@ class Grid():
 
     def swaps_a_faire(self, etatinitial, etatfinal):
         liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
-
         for i in range(len(liste_grilles)):
             swaps = []
             M = liste_grilles[i]
@@ -259,6 +261,12 @@ class Grid():
                     if (j-1) >= 0 and M[j, k] == liste_grilles[i+1][j-1][k]:
                         swaps.append(M(j, k), liste_grilles[i+1][j-1][k])
         return swaps
+
+    """
+    Question 8
+    Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination,
+    il faut le construire au fur et à mesure de son parcours
+    """
 
     def bfs_bis(self, src, dst):
         file = Queue()
@@ -291,3 +299,4 @@ class Grid():
             y = parents[y]
             chemin = [y] + chemin
         return chemin
+

@@ -4,9 +4,6 @@
 import sys
 sys.path.append("swap_puzzle/")
 
-
-
-
 import unittest
 from grid import Grid
 import graph
@@ -29,12 +26,9 @@ class Test_noeuds(unittest.TestCase):
                     compteur += 1
         self.assertEqual(compteur, 0)
 
-
-       # les deux tests permettent de vérifier que la liste renvoyée par la fonction noeuds
-       # renvoie le bon nombre de grilles et qu'elles sont toutes différents
-       # On vérifie ainsi que la fonction noeuds renvoie bien toutes les grilles possibles.
+        # les deux tests permettent de vérifier que la liste renvoyée par la fonction noeuds
+        # renvoie le bon nombre de grilles et qu'elles sont toutes différents
+        # On vérifie ainsi que la fonction noeuds renvoie bien toutes les grilles possibles.
    
-
-
 if __name__ == '__main__':
    unittest.main()
