@@ -127,12 +127,12 @@ class Graph:
                     file.put(voisin)
                     parents[voisin] = x
                     sommets_visites.append(voisin)
-        chemin = [dst]
+        chemin = [dst]  # on reconstitue le chemin parcouru pour arriver à la destination
         y = dst
         while y != src:
             y = parents[y]
             chemin = [y] + chemin
-        return chemin
+        return chemin  # renvoie le chemin le plus court entre src et dst
 
     @classmethod
     def graph_from_file(cls, file_name):
