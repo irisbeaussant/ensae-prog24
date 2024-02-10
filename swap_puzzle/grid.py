@@ -10,6 +10,7 @@ from queue import Queue
 This is the grid module. It contains the Grid class and its associated methods.
 """
 
+
 class Grid():
     """
     A class representing the grid from the swap puzzle. It supports rectangular grids.
@@ -71,7 +72,6 @@ class Grid():
                     return False
         return True
 
-
         """
         testé : ok
         """
@@ -89,7 +89,7 @@ class Grid():
             column number of the cell.
         """
         if abs(cell1[0]-cell2[0]) != 1 and abs(cell1[1]-cell2[1]) != 1:
-            return "pas le droit d'échanger"
+            print("cannot be swaped")
         else:
             (self.state[cell1[0]][cell1[1]], self.state[cell2[0]][cell2[1]]) = (self.state[cell2[0]][cell2[1]], self.state[cell1[0]][cell1[1]])
        
@@ -162,7 +162,7 @@ class Grid():
         plt.colorbar()
         plt.show()
 
-    def representation_graphique_bis(self):
+    def representation_graphique_bis(self):  # représentation sous la forme d'un tableau
         grille = self.state
         fig, ax = plt.subplots()
         ax.set_axis_off()
@@ -189,7 +189,7 @@ class Grid():
             i = np.array(i).reshape((m, n))
             i = tuple(tuple(element) for element in i)
             toutes_grilles.append(i)
-        return toutes_grilles
+        return toutes_grilles  # renvoie une liste contenant toutes les grilles possibles
 
     """
 
@@ -198,9 +198,26 @@ class Grid():
     -Pour créer tous les noeuds on permute une liste de longueur m*n donc il y a (mn)! noeuds
 
 
+
+    -ordre de grandeur de la complexité de la méthode bfs:
+        -dans le meilleur des csa la grille est triée et la complkexité est en temps constant
+        -dans le pire des cas on parcourt tous les sommets du graphe, alors la complexité
+        est en O((m*n)!)
+        -en moyenne on peut supposer qu'il n'y a pas de raison qu'une grille prise au hasard soit
+        plus ou moin loin de la destination, donce en moyenne la complexité est en O((m*n)!/2)
+        donc en O(m*n)!
+        -cela correspond à une complexité bien plus importante que celle de la méthode naïve
+        
+
+        -cependant la methode bfs appliquée aux grilles utilise également la fonction
+        liste_noeuds_a_relier qui a une complexité en O((mn)!³*(mn)²), ce qui est implique
+        que la méthode bfs appliquée aux grilles a une complexité d'autant plus importante
+        que la méthode naïve à cause de la factorielle
+
     """
 
     @staticmethod
+    # permet de vérifier si deux listes de listes sont égales
     def comp_mat(M, N):   # M et N sont de mêmes dimensions
         for i in range(len(M)):
             for j in range(len(M[0])):
@@ -209,6 +226,8 @@ class Grid():
         return True  # signifie que les deux matrices sont identiques
 
     @staticmethod
+    # permet de vérifier si un couple de liste de listes est présent dans une liste de couples 
+    # de listes de listes
     def dans_liste(M, N, liste):
         for (i, j) in liste:
             if Grid.comp_mat(M, i) and Grid.comp_mat(N, j):
@@ -238,19 +257,19 @@ class Grid():
                                 if j-1 >= 0 and (M1[i][j] == M2[i][j-1]):
                                     L.append((M1, M2))
         return L
+        # renvoie une liste de couples qui sont voisins
 
     # méthode BFS adaptée aux grilles
     # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
-
     def chemin_le_plus_court(self, etatinitial, etatfinal):
         graphe_grilles = Graph(Grid.noeuds(self))
         for (i, j) in self.liste_noeuds_a_relier():
             graphe_grilles.add_edge(i, j)
         solution = graphe_grilles.bfs(etatinitial, etatfinal)
         return solution
+
     # swaps_a_faire complète le résultat de chemin_le_plus_court en renvoyant les swaps nécessaires
     # pour réaliser ce chemin
-
     def swaps_a_faire(self, etatinitial, etatfinal):
         liste_grilles = Grid.chemin_le_plus_court(etatinitial, etatfinal)
         for i in range(len(liste_grilles)):
@@ -270,8 +289,10 @@ class Grid():
 
     """
     Question 8
+
     Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination,
     il faut le construire au fur et à mesure de son parcours
+    
     """
 
     def bfs_bis(self, src, dst):
