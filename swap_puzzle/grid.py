@@ -149,7 +149,7 @@ class Grid():
     """
 
     Question 4
-    Représentation graphique
+    Représentation graphique de la grille
 
     """
 
@@ -173,9 +173,12 @@ class Grid():
     Question 6 :
     Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non
     mutable, on les transforme en tuples
+
+    Afin de créer toutes les grilles possible on trouve toutes les permutations
+
     """
 
-    def noeuds(self):  # self est un grid
+    def noeuds(self):
         m = self.m
         n = self.n
         liste = [k for k in range(1, (m*n+1))]  # on crée la liste de tous les nombres contenus
@@ -191,6 +194,9 @@ class Grid():
     """
 
     Question 7
+
+    -Pour créer tous les noeuds on permute une liste de longueur m*n donc il y a (mn)! noeuds
+
 
     """
 
@@ -211,7 +217,7 @@ class Grid():
     # Si le couple de matrices est déjà dans la liste, renvoie true, sinon false
 
     def liste_noeuds_a_relier(self):  # on cherche quels noeuds sont voisins dans le graphe
-        m = self.m            
+        m = self.m
         n = self.n
         L = []
         for M1 in self.noeuds():
