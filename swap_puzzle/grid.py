@@ -265,19 +265,18 @@ class Grid():
         graphe_grilles = Graph(Grid.noeuds(self))
         for (i, j) in self.liste_noeuds_a_relier():
             graphe_grilles.add_edge(i, j)
-<<<<<<< HEAD
+
         src = tuple(tuple(element) for element in etatinitial)
         dst = tuple(tuple(element) for element in etatfinal)
         solution = graphe_grilles.bfs(src, dst)
         sol = [[list(t) for t in G] for G in solution]
         return sol
-=======
         solution = graphe_grilles.bfs(etatinitial, etatfinal)
         return solution
 
->>>>>>> e4cd8c4a2ea70eb431fbde07a40d4d1c0e13853b
     # swaps_a_faire complète le résultat de chemin_le_plus_court en renvoyant les swaps nécessaires
     # pour réaliser ce chemin
+
     def swaps_a_faire(self, etatinitial, etatfinal):
         liste_grilles = Grid.chemin_le_plus_court(self, etatinitial, etatfinal)
         m = len(etatinitial)
