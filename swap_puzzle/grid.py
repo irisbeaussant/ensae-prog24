@@ -197,7 +197,11 @@ class Grid():
 
     -Pour créer tous les noeuds on permute une liste de longueur m*n donc il y a (mn)! noeuds
 
-
+    -A partir d'une grille mxn on peut réaliser m(n-1) swaps entre deux cases adjacentes 
+     horizontalement et n(m-1) swaps entre deux cases adjacentes verticalement.
+     Une grille a donc m(n-1)+n(m-1) voisins.
+     Or si un noeud N1 est relié à N2 on a forcément N2 relié à N1, et ce par une unique arête.
+     Ainsi il y a (m*n)!*(m(n-1)+n(m-1))/2 arêtes
 
     -ordre de grandeur de la complexité de la méthode bfs:
         -dans le meilleur des csa la grille est triée et la complkexité est en temps constant
@@ -207,7 +211,7 @@ class Grid():
         plus ou moin loin de la destination, donce en moyenne la complexité est en O((m*n)!/2)
         donc en O(m*n)!
         -cela correspond à une complexité bien plus importante que celle de la méthode naïve
-        
+       
 
         -cependant la methode bfs appliquée aux grilles utilise également la fonction
         liste_noeuds_a_relier qui a une complexité en O((mn)!³*(mn)²), ce qui est implique
@@ -337,4 +341,3 @@ class Grid():
             chemin = [y] + chemin
         return chemin
 
-  
