@@ -324,9 +324,9 @@ class Grid():
                     for (i, j) in Grid.liste_noeuds_a_relier(self):
                         i1 = [list(t) for t in i]
                         j1 = [list(t) for t in j]
-                        if Grid.comp_mat(i1, j1):
+                        if Grid.comp_mat(self, x, i1):
                             g[x].append(j)
-                        elif Graph.comp_mat(self, j, x):
+                        elif Graph.comp_mat(self, j1, x):
                             g[x].append(i)
                 sommets_visites.append(x)
             for voisin in g[x]:
