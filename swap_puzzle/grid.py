@@ -5,6 +5,7 @@ from itertools import permutations
 import matplotlib as plt
 from graph import Graph
 from queue import Queue
+import heapq
 
 """
 This is the grid module. It contains the Grid class and its associated methods.
@@ -341,3 +342,148 @@ class Grid():
             chemin = [y] + chemin
         return chemin
 
+    """
+    Algorithme A*
+    """
+
+    @staticmethod
+    def calcul_coordonnees(x, m, n):
+        i = (x-1) // n
+        j = (x-1) % n
+        return (i, j)
+
+    @staticmethod
+    def dist_cases(c1, c2):
+        x1, y1 = c1
+        x2, y2 = c2
+        d = abs(x1-x2)+abs(y1-y2)
+        return d
+        # renvoie la distance entre deux cases au sein d'une grille
+
+    @staticmethod
+    def borne_inf_a_dst(G):
+        inf = 0
+        G = list(list(element) for element in G)
+        for i in range(len(G)):
+            for j in range(len(G[0])):
+                x = G[i][j]
+                if Grid.calcul_coordonnees(x, len(G), len(G[0])) != (i, j):
+                    inf += Grid.dist_cases((i, j), Grid.calcul_coordonnees(x, len(G), len(G[0])))
+        return inf/2
+        # renvoie une approximation de la distance entre la grille actuelle et le but
+
+    def trouver_coord(self, k):  # trouve les coordonnées de k dans une grille
+        for i in range(self.m):
+            for j in range(self.n):
+                if self.state[i][j] == k:
+                    return (i, j)
+
+    @staticmethod
+    def dist_grilles(G, src):  # permet de claculer la distance entre la source et la grille
+        # actuelle. Permet de calculer le coût
+        dist = 0
+        G = list(list(element) for element in G)
+        for i in range(len(G)):
+            for j in range(len(G[0])):
+                if G[i][j] != src.state[i][j]:
+                    dist += Grid.dist_cases((i, j), src.trouver_coord(G[i][j]))
+        return dist
+
+    def A_star(self, src, dst):
+        noeuds_visites = []
+        src_hash = tuple(tuple(element) for element in src.state)
+        dst_hash = tuple(tuple(element) for element in dst.state)
+        file = [(0, src_hash)]
+        heapq.heapify(file)
+        g = {}  # initialisation du graphe que l'on construit au fur et à mesure
+        couts = {}
+        couts[src_hash] = 0
+        parents = {}
+        while file:
+            c, x = heapq.heappop(file)
+            if x == dst:
+                break
+            if x not in noeuds_visites:
+                if x not in g:
+                    g[x] = []
+                    noeuds_visites.append(x)  # on construit le graphe au fur et à mesure
+                    for (i, j) in Grid.liste_noeuds_a_relier(self):
+                        i1 = [list(t) for t in i]
+                        j1 = [list(t) for t in j]
+                        if Grid.comp_mat(x, i1):
+                            g[x].append(j)
+                        elif Grid.comp_mat(j1, x):
+                            g[x].append(i)
+                noeuds_visites.append(x)
+            for voisin in g[x]:
+                voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid pour
+                # pouvoir utiliser borne_inf_a_dst
+                cout = Grid.dist_grilles(voisin, src) + Grid.borne_inf_a_dst(voisin_liste)
+                couts[voisin] = cout
+                if voisin not in noeuds_visites or (voisin in noeuds_visites and couts[voisin] >= cout):
+                    noeuds_visites.append(voisin)
+                    parents[voisin] = x
+                    heapq.heappush(file, (cout, voisin))
+        chemin = [dst]  # on reconstitue le chemin parcouru pour arriver à la destination
+        y = dst
+        while y != src_hash:
+            y = tuple(tuple(liste) for liste in y)
+            y = parents[y]
+            chemin = [y] + chemin
+        chemin = [[list(t) for t in G] for G in chemin]
+        return chemin
+
+
+
+
+
+
+"""
+    
+    #gOrd =Grid.__init__(self,m , n , initial_state=[])
+    #grille ordonnée
+
+
+
+#class noeud():
+
+
+
+    #def __init__(self,x, coût, heuristique, initial_state=[]):
+     #       self.x=x
+            self.coût=coût
+            self.heuristique=heuristique
+            if not initial_state:
+                initial_state=[x, coût, heuristique]
+            self.state = initial_state
+
+
+
+    def A(self,src:noeud):
+            src.coût=0
+            closedList = Queue()
+            openList = heapify([]) #liste de couples (valeur heuristique, noeud)
+            heapq.heappush(openList, (0,src))
+            parents={}
+            g={}
+            while openList:
+                u=heapq.heappop(heap)[1]  #prend la valeur avec la plus petite heuristique
+                if u==gOrd:
+                    break
+                for v in g[u]:
+                    if not (v in closedList or (v in openList and (openList[0]<v.heuristique if openList[1]==v))):
+                        v.coût = u.coût+1
+                        v.heuristique = v.coût + (get_solution(self, m, n, v)/2)
+                     #l'heuristique est la méthode naïve/2
+                        heapq.heappush(openList, (v.heuristique,v))
+                        parent[v]=u
+                closedList.put(u)
+            #maintenant on reconstitue le chemin
+            chemin =[gOrd]
+            y = g0rd
+            while y != src:
+                y =parents[y]
+                chemin = [y] + chemin
+            return chemin
+
+"""
