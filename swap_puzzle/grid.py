@@ -401,33 +401,38 @@ class Grid():
         parents = {}
         while file:
             c, x = heapq.heappop(file)
-            if x == dst:
+            if x == dst_hash:
                 break
+            if x not in g:
+                g[x] = []  # on construit le graphe au fur et à mesure
+                for (i, j) in Grid.liste_noeuds_a_relier(self):
+                    i1 = [list(t) for t in i]
+                    j1 = [list(t) for t in j]
+                    if x == i1:
+                        g[x].append(j)
+                    elif Grid.comp_mat(j1, x):
+                        g[x].append(i)
             if x not in noeuds_visites:
-                if x not in g:
-                    g[x] = []
-                    noeuds_visites.append(x)  # on construit le graphe au fur et à mesure
-                    for (i, j) in Grid.liste_noeuds_a_relier(self):
-                        i1 = [list(t) for t in i]
-                        j1 = [list(t) for t in j]
-                        if Grid.comp_mat(x, i1):
-                            g[x].append(j)
-                        elif Grid.comp_mat(j1, x):
-                            g[x].append(i)
                 noeuds_visites.append(x)
             for voisin in g[x]:
                 voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid pour
                 # pouvoir utiliser borne_inf_a_dst
                 cout = Grid.dist_grilles(voisin, src) + Grid.borne_inf_a_dst(voisin_liste)
-                couts[voisin] = cout
-                if voisin not in noeuds_visites or (voisin in noeuds_visites and couts[voisin] >= cout):
+                # couts[voisin] = cout
+                if voisin in noeuds_visites and couts[voisin] >= cout:
                     noeuds_visites.append(voisin)
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
+                    couts[voisin] = cout
+                if voisin not in noeuds_visites:   # or (voisin in noeuds_visites and couts[voisin] >= cout):
+                    noeuds_visites.append(voisin)
+                    parents[voisin] = x
+                    heapq.heappush(file, (cout, voisin))
+                    couts[voisin] = cout
         chemin = [dst]  # on reconstitue le chemin parcouru pour arriver à la destination
-        y = dst
+        y = dst_hash
         while y != src_hash:
-            y = tuple(tuple(liste) for liste in y)
+            # y = tuple(tuple(liste) for liste in y)
             y = parents[y]
             chemin = [y] + chemin
         chemin = [[list(t) for t in G] for G in chemin]
@@ -435,7 +440,7 @@ class Grid():
 
 
 
-
+print Grid.
 
 
 """
