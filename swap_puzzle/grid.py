@@ -438,7 +438,28 @@ class Grid():
         chemin = [[list(t) for t in G] for G in chemin]
         return chemin
 
+    # swaps_A_star complète le résultat de chemin_le_plus_court en renvoyant les swaps nécessaires
+    # pour réaliser ce chemin
 
+    def swaps_A_star(self, etatinitial, etatfinal):
+        liste_grilles = Grid.A_star(self, etatinitial, etatfinal)
+        m = len(etatinitial)
+        n = len(etatinitial[1])
+        for i in range(len(liste_grilles)-1):  # il faut mettre -1 car le dernier élément
+            # ne peut pas être comparé avec l'élément suivant, qui n'existe pas
+            swaps = []
+            M = liste_grilles[i]
+            for j in range(m):
+                for k in range(n):
+                    if (k+1) < n and M[j][k] == liste_grilles[i+1][j][k+1]:
+                        swaps.append(((j, k), (j, k+1)))
+                    if (k-1) >= 0 and M[j][k] == liste_grilles[i+1][j][k-1]:
+                        swaps.append(((j, k), (j, k-1)))
+                    if (j+1) < m and M[j][k] == liste_grilles[i+1][j+1][k]:
+                        swaps.append(((j, k), (j+1, k)))
+                    if (j-1) >= 0 and M[j][k] == liste_grilles[i+1][j-1][k]:
+                        swaps.append(((j, k), (j-1, k)))
+        return swaps
 
 
 
