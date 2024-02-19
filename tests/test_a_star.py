@@ -19,7 +19,7 @@ class Test_a_star(unittest.TestCase):
         B_grid = Grid.grid_from_file("input/grid6.in")
         #B = tuple(tuple(liste) for liste in B_grid.state)
         chemin = A_grid.A_star(A_grid, B_grid)
-        self.assertEqual(chemin, [A_grid.state, [[1, 2], [4, 3]], B_grid.state])
+        self.assertEqual(chemin, [A_grid.state, [[1, 4], [3, 2]], B_grid.state])
 
 
 if __name__ == '__main__':

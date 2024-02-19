@@ -408,7 +408,7 @@ class Grid():
                 for (i, j) in Grid.liste_noeuds_a_relier(self):
                     i1 = [list(t) for t in i]
                     j1 = [list(t) for t in j]
-                    if x == i1:
+                    if Grid.comp_mat(i1, x):
                         g[x].append(j)
                     elif Grid.comp_mat(j1, x):
                         g[x].append(i)
@@ -429,10 +429,10 @@ class Grid():
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
                     couts[voisin] = cout
-        chemin = [dst]  # on reconstitue le chemin parcouru pour arriver à la destination
+        chemin = [dst_hash]  # on reconstitue le chemin parcouru pour arriver à la destination
         y = dst_hash
         while y != src_hash:
-            # y = tuple(tuple(liste) for liste in y)
+            y = tuple(tuple(liste) for liste in y)
             y = parents[y]
             chemin = [y] + chemin
         chemin = [[list(t) for t in G] for G in chemin]
@@ -440,7 +440,6 @@ class Grid():
 
 
 
-print Grid.
 
 
 """
