@@ -344,6 +344,22 @@ class Grid():
 
     """
     Algorithme A*
+
+    heuristiques:
+
+    - somme des distances des cases de la grille à leur bonne position (distance manhattan), le tout divisé par 2.
+    La division par 2 permet d'avoir une estimation qui soit inférieure au nombre de swaps qu'il 
+    faut réellement. En effet lorsqu'on échange 2 cases il ne faut qu'un swap
+    C'est cette heuristique qui est utilisée dans le code si dessous.
+
+    - on pourrait utiliser cette même somme mais prendre la racine carrée au lieu de diviser par 2
+
+    - on pourrait calculer la somme des distance euclidiennes mais cela ne paraît pas très adapté
+    car on ne peut pas réaliser de swaps en diagonale
+
+    - on pourrait calculer le nombre de cases mal placées. en effet plus le nombre de cases mal 
+    placées est grand plus le coût serait grand.
+
     """
 
     @staticmethod
@@ -497,7 +513,59 @@ class Grid():
             return swaps
 
      
+import pygame
+import sys
+import random
 
+    pygame.init()
+
+    def grille_interactive(self):
+        n = self.n
+        m = self.m
+        cell_size = 50
+        margin = 5
+        background_color = (255, 255, 255)
+        cell_color = (0, 0, 0)
+        grid = [[row * m + col for col in range(m)] for row in range(n)]
+    random.shuffle(grid)  # Mélanger la grille initiale
+    screen_width = m * (cell_size + margin) + margin
+    screen_height = n * (cell_size + margin) + margin
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Tri de la grille")
+    screen.fill(background_color)
+    for row in range(n):
+        for col in range(m):
+            pygame.draw.rect(screen, cell_color, (col * (cell_size + margin) + margin,
+                                                 row * (cell_size + margin) + margin,
+                                                 cell_size, cell_size))
+            font = pygame.font.Font(None, 36)
+            text = font.render(str(grid[row][col]), True, (255, 255, 255))
+            screen.blit(text, (col * (cell_size + margin) + margin + cell_size // 2 - 10,
+                               row * (cell_size + margin) + margin + cell_size // 2 - 10))
+
+def swap_cells(row1, col1, row2, col2):
+    grid[row1][col1], grid[row2][col2] = grid[row2][col2], grid[row1][col1]
+
+# Boucle principale
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # Lorsqu'on clique avec le bouton gauche de la souris
+            mouse_x, mouse_y = event.pos
+            col_clicked = mouse_x // (cell_size + margin)
+            row_clicked = mouse_y // (cell_size + margin)
+            if 0 <= row_clicked < n and 0 <= col_clicked < m:
+                # Échange avec la case voisine à droite
+                swap_cells(row_clicked, col_clicked, row_clicked, col_clicked + 1)
+                draw_grid()
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()  
 
 
  
