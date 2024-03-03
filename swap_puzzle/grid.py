@@ -264,6 +264,35 @@ class Grid():
         return L
         # renvoie une liste de couples qui sont voisins
 
+    def liste_noeuds_a_relier_bis(self):
+        m = self.m
+        n = self.n
+        L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
+        for i in range(m):  # au lieu de parcourir tous les noeuds et de vérifier s'il sont des voisins de la grille
+            # on va construire tous les voisins. Cela évite d'avoir à comparer des grilles.
+            for j in range(n):
+                if (i-1) > 0:
+                    G = self
+                    Grid.swap(G, (i, j), (i-1, j))
+                    L.append(G)
+                if (i+1) < (n-1):
+                    G = self
+                    Grid.swap(G, (i, j), (i+1, j))
+                    L.append(G)
+                if (j-1) > 0:
+                    G = self
+                    Grid.swap(G, (i, j-1), (i, j))
+                    L.append(G)
+                if (j+1) < (m-1):
+                    G = self
+                    Grid.swap(G, (i, j+1), (i, j))
+                    L.append(G)
+        return L
+        # renvoie une liste de couples qui sont voisins
+
+
+
+
     # méthode BFS adaptée aux grilles
     # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
     def chemin_le_plus_court(self, etatinitial, etatfinal):
@@ -417,21 +446,21 @@ class Grid():
         couts[src_hash] = 0
         parents = {}
         while file:
+            print("noeuds vis=", noeuds_visites)
             c, x = heapq.heappop(file)
             if x == dst_hash:
                 break
             if x not in g:
                 g[x] = []  # on construit le graphe au fur et à mesure
-                for (i, j) in Grid.liste_noeuds_a_relier(self):
-                    i1 = [list(t) for t in i]
-                    j1 = [list(t) for t in j]
-                    if Grid.comp_mat(i1, x):
-                        g[x].append(j)
-                    elif Grid.comp_mat(j1, x):
-                        g[x].append(i)
+                print("g=", g)
+                x_l=list(list(element)for element in x)
+                for i in Grid.liste_noeuds_a_relier_bis(x):
+                    g[x].append(i)
+                print("g", g)
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
+                print("voisin=", voisin)
                 print(g)
                 dist_a_la_source[voisin] = dist_a_la_source[x]+1
                 voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid pour
@@ -512,60 +541,9 @@ class Grid():
                         swaps.append((L(j), L(j+1)))
             return swaps
 
-     
-import pygame
-import sys
-import random
 
-    pygame.init()
-
-    def grille_interactive(self):
-        n = self.n
-        m = self.m
-        cell_size = 50
-        margin = 5
-        background_color = (255, 255, 255)
-        cell_color = (0, 0, 0)
-        grid = [[row * m + col for col in range(m)] for row in range(n)]
-    random.shuffle(grid)  # Mélanger la grille initiale
-    screen_width = m * (cell_size + margin) + margin
-    screen_height = n * (cell_size + margin) + margin
-    screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("Tri de la grille")
-    screen.fill(background_color)
-    for row in range(n):
-        for col in range(m):
-            pygame.draw.rect(screen, cell_color, (col * (cell_size + margin) + margin,
-                                                 row * (cell_size + margin) + margin,
-                                                 cell_size, cell_size))
-            font = pygame.font.Font(None, 36)
-            text = font.render(str(grid[row][col]), True, (255, 255, 255))
-            screen.blit(text, (col * (cell_size + margin) + margin + cell_size // 2 - 10,
-                               row * (cell_size + margin) + margin + cell_size // 2 - 10))
-
-def swap_cells(row1, col1, row2, col2):
-    grid[row1][col1], grid[row2][col2] = grid[row2][col2], grid[row1][col1]
-
-# Boucle principale
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # Lorsqu'on clique avec le bouton gauche de la souris
-            mouse_x, mouse_y = event.pos
-            col_clicked = mouse_x // (cell_size + margin)
-            row_clicked = mouse_y // (cell_size + margin)
-            if 0 <= row_clicked < n and 0 <= col_clicked < m:
-                # Échange avec la case voisine à droite
-                swap_cells(row_clicked, col_clicked, row_clicked, col_clicked + 1)
-                draw_grid()
-
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()  
-
+A_grid = Grid.grid_from_file("input/grid7.in")
+B_grid = Grid.grid_from_file("input/grid8.in")
+print(Grid.A_star(A_grid, A_grid, B_grid))
 
  

@@ -21,8 +21,8 @@ class Solver():
     -La fonction fonctionne quel que soit l'état initial de la grille.
 
     -Complexité en temps :
-        - dans le meilleur des cas, si la grille est triée : m*n
-        - dans le pire des cas : (m+n)²*m*n  (ordre de grandeur)
+        - dans le meilleur des cas, si la grille est triée : (m*n)²
+        - dans le pire des cas : (m+n)*(m*n)²  (ordre de grandeur)
             cette valeur est un peu surestimée car il faudra parcourir la boucle while m+n fois
             seulement pour les cases qui sont dans un coin et doivent être placées dans le coin
             opposé
@@ -66,7 +66,7 @@ class Solver():
                     g.swap(self.trouver(k, g), ((x+1, self.trouver(k, g)[1])))
                 if self.trouver(k, g)[1] > j:
                     x = self.trouver(k, g)[0]
-                    changements.append((self.trouver(k, g), (x, self.trouver(k,g)[1]-1)))
+                    changements.append((self.trouver(k, g), (x, self.trouver(k, g)[1]-1)))
                     g.swap(self.trouver(k, g), (x, self.trouver(k, g)[1]-1))
                 elif self.trouver(k, g)[1] < j:
                     x = self.trouver(k, g)[0]
