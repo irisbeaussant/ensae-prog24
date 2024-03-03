@@ -264,33 +264,43 @@ class Grid():
         return L
         # renvoie une liste de couples qui sont voisins
 
-    def liste_noeuds_a_relier_bis(self):
-        m = self.m
-        n = self.n
+    @staticmethod
+    def liste_noeuds_a_relier_bis(grille):  # prend en argument une liste de listes
+        m = len(grille)
+        n = len(grille[0])
         L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
-        for i in range(m):  # au lieu de parcourir tous les noeuds et de vérifier s'il sont des voisins de la grille
+        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des voisins de la grille
             # on va construire tous les voisins. Cela évite d'avoir à comparer des grilles.
             for j in range(n):
-                if (i-1) > 0:
-                    G = self
-                    Grid.swap(G, (i, j), (i-1, j))
+                if (i-1) >= 0:
+                    G = np.copy(grille)
+                    #print(G)
+                    #print(i, j,G, G[i][j], G[i-1][j] )
+                    G[i][j], G[i-1][j] = G[i-1][j], G[i][j]
+                    #print(i,j,G)
+                    
                     L.append(G)
-                if (i+1) < (n-1):
-                    G = self
-                    Grid.swap(G, (i, j), (i+1, j))
+                if (i+1) <= (m-1):
+                    G = np.copy(grille)
+                    G[i][j], G[i+1][j] = G[i+1][j], G[i][j]
+                    #print(G)
+                    
                     L.append(G)
-                if (j-1) > 0:
-                    G = self
-                    Grid.swap(G, (i, j-1), (i, j))
+                if (j-1) >= 0:
+                    G = np.copy(grille)
+                    G[i][j], G[i][j-1] = G[i][j-1], G[i][j]
+                    #print(G)
+                    
                     L.append(G)
-                if (j+1) < (m-1):
-                    G = self
-                    Grid.swap(G, (i, j+1), (i, j))
+                if (j+1) <= (n-1):
+                    G = np.copy(grille)
+                    G[i][j], G[i][j+1] = G[i][j+1], G[i][j]
+                    #print(G)
+                    
                     L.append(G)
         return L
         # renvoie une liste de couples qui sont voisins
-
-
+    print(",djdj", liste_noeuds_a_relier_bis([[1, 2], [3,4]]))
 
 
     # méthode BFS adaptée aux grilles
@@ -445,23 +455,30 @@ class Grid():
         couts = {}
         couts[src_hash] = 0
         parents = {}
+        #print(Grid.liste_noeuds_a_relier_bis([[1,2],[3,4]]))
         while file:
-            print("noeuds vis=", noeuds_visites)
+            #print("noeuds vis=", noeuds_visites)
             c, x = heapq.heappop(file)
             if x == dst_hash:
                 break
             if x not in g:
                 g[x] = []  # on construit le graphe au fur et à mesure
-                print("g=", g)
-                x_l=list(list(element)for element in x)
-                for i in Grid.liste_noeuds_a_relier_bis(x):
-                    g[x].append(i)
-                print("g", g)
+                #print("g=", g)
+                x_l = list(list(element) for element in x)
+                
+                for i in Grid.liste_noeuds_a_relier_bis(x_l):
+                    
+                    i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
+                    # est une liste de liste de listes. Il faut donc les retransformer en des tuples
+                    # afin d'avoir des variables hashables
+                    if i not in g[x]:
+                        g[x].append(i)
+                
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
-                print("voisin=", voisin)
-                print(g)
+                #print("voisin=", voisin)
+                #print(g)
                 dist_a_la_source[voisin] = dist_a_la_source[x]+1
                 voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid pour
                 # pouvoir utiliser borne_inf_a_dst
@@ -477,6 +494,7 @@ class Grid():
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
                     couts[voisin] = cout
+        #print(g)
         chemin = [dst_hash]  # on reconstitue le chemin parcouru pour arriver à la destination
         y = dst_hash
         while y != src_hash:
@@ -542,8 +560,8 @@ class Grid():
             return swaps
 
 
-A_grid = Grid.grid_from_file("input/grid7.in")
-B_grid = Grid.grid_from_file("input/grid8.in")
+A_grid = Grid.grid_from_file("input/grid5.in")
+B_grid = Grid.grid_from_file("input/grid6.in")
 print(Grid.A_star(A_grid, A_grid, B_grid))
 
- 
+
