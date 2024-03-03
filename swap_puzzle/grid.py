@@ -503,9 +503,9 @@ class Grid():
             swaps = []
             if len(self.state) != 1:
                 return ("le grille doit être de taille 1*n")
-            m = self.m
-            for i in range(m):
-                for j in range(m-i-1):  # au fur et à mesure que l'algorithme se déroule
+            n = self.n
+            for i in range(n):
+                for j in range(n-i-1):  # au fur et à mesure que l'algorithme se déroule
                     # la fin de la liste devient triée, il est donc inutile de comparer 
                     if L[j] > L[j+1]:
                         L[j], L[j+1] = L[j+1], L[j]
