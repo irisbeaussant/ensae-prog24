@@ -348,14 +348,20 @@ class Grid():
                 break
             if x not in sommets_visites:
                 if x not in g:
-                    g[x] = []    # on crée le dictionnaire au fur et à mesure qu'on en a besoin
-                    for (i, j) in Grid.liste_noeuds_a_relier(self):
-                        i1 = [list(t) for t in i]
-                        j1 = [list(t) for t in j]
-                        if Grid.comp_mat(self, x, i1):
-                            g[x].append(j)
-                        elif Graph.comp_mat(self, j1, x):
+                    g[x] = []  # on crée le dictionnaire au fur et à mesure qu'on en a besoin
+                    for i in Grid.liste_noeuds_a_relier_bis(x_l):
+                        i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
+                    # est une liste de liste de listes. Il faut donc les retransformer en des tuples
+                    # afin d'avoir des variables hashables
+                        if i not in g[x]:
                             g[x].append(i)
+                    #for (i, j) in Grid.liste_noeuds_a_relier(self):
+                      #  i1 = [list(t) for t in i]
+                       # j1 = [list(t) for t in j]
+                        #if Grid.comp_mat(self, x, i1):
+                         #   g[x].append(j)
+                    #    elif Graph.comp_mat(self, j1, x):
+                     #       g[x].append(i)
                 sommets_visites.append(x)
             for voisin in g[x]:
                 if voisin not in sommets_visites:
@@ -509,41 +515,118 @@ class Grid():
                         swaps.append(((j, k), (j-1, k)))
         return swaps
 
+    """
+    5_ barrières
 
-        A = Grid.grid_from_file("input/grid5.in")
-        B = Grid.grid_from_file("input/grid6.in")
-        chemin = A.chemin_le_plus_court(A.state, B.state)
+    On crée des barrières pour complexifier le problème.
+
+    """
+
+    # La fonction sep_par_barrieres prend en argument deux grilles voisines et la liste des
+    # barrières.
+    # Elle vérifie si le swap qui permet de passer d'une grille à l'autre est autorisé
+    # ou s'il y a une barrière qui l'empêche.
+
+    def sep_par_barriere(grille1, grille2, barrieres):
+        # barrières est une liste de couples de coordonnées. Ces coordonées représentent
+        # les cases entre lesquelles il y a des barrières
+
+        for (i, j) in barrieres:
+            p, q = i  # coordonnées de la case d'un côté de la barrière
+            r, s = j  # coordonnées de la case de l'autre côté de la barrière
+            if grille1[p][q] == grille2[r][s]:  # i.e. il faut effectuer un swap entre les
+                # cases de coordonnées (p,q) et (r,s) pour passer d'une grille à l'autre
+                return False  # False signifie que le swap est interdit, il y a une barrière
+        return True
+        # True signifie qu'on a le droit de faire le swap
+
+    def barrieres(self, src, dst, barrieres):
+        noeuds_visites = []
+        src_hash = tuple(tuple(element) for element in src.state)
+        dst_hash = tuple(tuple(element) for element in dst.state)
+        file = [(0, src_hash)]
+        heapq.heapify(file)
+        dist_a_la_source = {src_hash: 0}
+        g = {}  # initialisation du graphe que l'on construit au fur et à mesure
+        couts = {}
+        couts[src_hash] = 0
+        parents = {}
+        while file:
+            c, x = heapq.heappop(file)
+            if x == dst_hash:
+                break
+            if x not in g:
+                g[x] = []  # on construit le graphe au fur et à mesure
+                x_l = list(list(element) for element in x)
+                for i in Grid.liste_noeuds_a_relier_bis(x_l):
+                    i_bis = tuple(tuple(element) for element in i)  # la liste de noeuds
+                    # voisins de x est une liste de liste de listes. Il faut donc les                      
+                    # retransformer en des tuples afin d'avoir des variables hashables
+                    if i_bis not in g[x]:
+                        if Grid.sep_par_barriere(i, x_l, barrieres):
+                            # i.e. si on peut faire le swap
+                            g[x].append(i)
+            if x not in noeuds_visites:
+                noeuds_visites.append(x)
+            for voisin in g[x]:
+                # print("voisin=", voisin)
+                # print(g)
+                dist_a_la_source[voisin] = dist_a_la_source[x]+1
+                voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid
+                # pour pouvoir utiliser borne_inf_a_dst
+                cout = dist_a_la_source[voisin] + Grid.borne_inf_a_dst(voisin_liste)
+                # couts[voisin] = cout
+                if voisin in noeuds_visites and couts[voisin] >= cout:
+                    noeuds_visites.append(voisin)
+                    parents[voisin] = x
+                    heapq.heappush(file, (cout, voisin))
+                    couts[voisin] = cout
+                if voisin not in noeuds_visites:   # or (voisin in noeuds_visites and couts[voisin] >= cout):
+                    noeuds_visites.append(voisin)
+                    parents[voisin] = x
+                    heapq.heappush(file, (cout, voisin))
+                    couts[voisin] = cout
+        #print(g)
+        chemin = [dst_hash]  # on reconstitue le chemin parcouru pour arriver à la destination
+        y = dst_hash
+        while y != src_hash:
+            y = tuple(tuple(liste) for liste in y)
+            y = parents[y]
+            chemin = [y] + chemin
+        chemin = [[list(t) for t in G] for G in chemin]
         return chemin
 
-        """
-        6_ cas particuliers et algorithmes
+
+
+    """
+    6_ cas particuliers et algorithmes
         
-        - si on a une grille 1*n on se retrouve à devoir trier une liste. Il existe de nombreux
-        algorithmes de tri dans ce cas. On peut par exemple effectuer un tri à bulles, qui trie
-        la liste en comparant 2 par 2 les cases et en faisant à chque boucle remonter le plus
-        grand nombre. 
-        Il faut un tri où on n'échange que des cases qui se touchent, donc pas un tri par sélection par exemple
+     - si on a une grille 1*n on se retrouve à devoir trier une liste. Il existe de nombreux
+    algorithmes de tri dans ce cas. On peut par exemple effectuer un tri à bulles, qui trie
+    la liste en comparant 2 par 2 les cases et en faisant à chque boucle remonter le plus
+    grand nombre. 
+    Il faut un tri où on n'échange que des cases qui se touchent, donc pas un tri par sélection par exemple
     
 
-        """
+    """
             
-        def tri_bulles(self):
-            L = self.state
-            swaps = []
-            if len(self.state) != 1:
-                return ("le grille doit être de taille 1*n")
-            n = self.n
-            for i in range(n):
-                for j in range(n-i-1):  # au fur et à mesure que l'algorithme se déroule
-                    # la fin de la liste devient triée, il est donc inutile de comparer 
-                    if L[j] > L[j+1]:
-                        L[j], L[j+1] = L[j+1], L[j]
-                        swaps.append((L(j), L(j+1)))
-            return swaps
+    def tri_bulles(self):
+        L = self.state
+        swaps = []
+        if len(self.state) != 1:
+            return ("le grille doit être de taille 1*n")
+        n = self.n
+        for i in range(n):
+            for j in range(n-i-1):  # au fur et à mesure que l'algorithme se déroule
+                # la fin de la liste devient triée, il est donc inutile de comparer 
+                if L[j] > L[j+1]:
+                    L[j], L[j+1] = L[j+1], L[j]
+                    swaps.append((L(j), L(j+1)))
+        return swaps
 
 
-A_grid = Grid.grid_from_file("input/grid5.in")
-B_grid = Grid.grid_from_file("input/grid6.in")
-print(Grid.A_star(A_grid, A_grid, B_grid))
+A_grid = Grid.grid_from_file("input/grid7.in")
+B_grid = Grid.grid_from_file("input/grid8.in")
+print(Grid.barrieres(A_grid, A_grid, B_grid, (((1, 1), (1, 2)))))
 
 
