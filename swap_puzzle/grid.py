@@ -348,13 +348,24 @@ class Grid():
                 break
             if x not in sommets_visites:
                 if x not in g:
-                    g[x] = []  # on crée le dictionnaire au fur et à mesure qu'on en a besoin
+
+                    g[x] = []  # on construit le graphe au fur et à mesure
+                    x_l = list(list(element) for element in x)
                     for i in Grid.liste_noeuds_a_relier_bis(x_l):
                         i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
-                    # est une liste de liste de listes. Il faut donc les retransformer en des tuples
-                    # afin d'avoir des variables hashables
+                        # est une liste de liste de listes. Il faut donc les retransformer en des tuples
+                        # afin d'avoir des variables hashables
                         if i not in g[x]:
                             g[x].append(i)
+
+
+                    #g[x] = []  # on crée le dictionnaire au fur et à mesure qu'on en a besoin
+                    #for i in Grid.liste_noeuds_a_relier_bis(x_l):
+                       # i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
+                    # est une liste de liste de listes. Il faut donc les retransformer en des tuples
+                    # afin d'avoir des variables hashables
+                        #if i not in g[x]:
+                           # g[x].append(i)
                     #for (i, j) in Grid.liste_noeuds_a_relier(self):
                       #  i1 = [list(t) for t in i]
                        # j1 = [list(t) for t in j]
@@ -457,11 +468,11 @@ class Grid():
                 g[x] = []  # on construit le graphe au fur et à mesure
                 x_l = list(list(element) for element in x)
                 for i in Grid.liste_noeuds_a_relier_bis(x_l):
-                    i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
-                    # est une liste de liste de listes. Il faut donc les retransformer en des tuples
-                    # afin d'avoir des variables hashables
-                    if i not in g[x]:
-                        g[x].append(i)
+                    i_bis = tuple(tuple(element) for element in i)  # la liste de noeuds
+                    # voisins de x est une liste de liste de listes. Il faut donc les                     
+                    # retransformer en des tuples afin d'avoir des variables hashables
+                    if i_bis not in g[x]:
+                        g[x].append(i_bis)
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
@@ -528,12 +539,13 @@ class Grid():
     # ou s'il y a une barrière qui l'empêche.
 
     def sep_par_barriere(grille1, grille2, barrieres):
-        # barrières est une liste de couples de coordonnées. Ces coordonées représentent
-        # les cases entre lesquelles il y a des barrières
-
-        for (i, j) in barrieres:
-            p, q = i  # coordonnées de la case d'un côté de la barrière
-            r, s = j  # coordonnées de la case de l'autre côté de la barrière
+        # barrières est une liste de listes. Chaque sous-liste est composée de quatre
+        # chiffres p, q, r, s tels que les coordonnées de la case d'un côté de la barrière
+        # sont (p,q) et que les coordonnées de la case de l'autre côté de la barrière
+        # sont (r,s)
+        for i in barrieres:
+            p, q = i[0], i[1]  # coordonnées de la case d'un côté de la barrière
+            r, s = i[2], i[3]  # coordonnées de la case de l'autre côté de la barrière
             if grille1[p][q] == grille2[r][s]:  # i.e. il faut effectuer un swap entre les
                 # cases de coordonnées (p,q) et (r,s) pour passer d'une grille à l'autre
                 return False  # False signifie que le swap est interdit, il y a une barrière
@@ -553,6 +565,7 @@ class Grid():
         parents = {}
         while file:
             c, x = heapq.heappop(file)
+            print("x=", x)
             if x == dst_hash:
                 break
             if x not in g:
@@ -560,17 +573,20 @@ class Grid():
                 x_l = list(list(element) for element in x)
                 for i in Grid.liste_noeuds_a_relier_bis(x_l):
                     i_bis = tuple(tuple(element) for element in i)  # la liste de noeuds
-                    # voisins de x est une liste de liste de listes. Il faut donc les                      
+                    # voisins de x est une liste de liste de listes. Il faut donc les                     
                     # retransformer en des tuples afin d'avoir des variables hashables
-                    if i_bis not in g[x]:
-                        if Grid.sep_par_barriere(i, x_l, barrieres):
-                            # i.e. si on peut faire le swap
-                            g[x].append(i)
+                    if not g[x]:
+                        g[x].append(i_bis)
+                        # si g[x] est vide on ne pourra pas rentrer dans la boucle for qui suit
+                    for j in g[x]:
+                        if not Grid.comp_mat(i, list(list(element) for element in j)):
+                            # on vérifie que i n'est pas déjà dans la liste des voisins de g
+                            if Grid.sep_par_barriere(i, x_l, barrieres):
+                                # i.e. si on peut faire le swap
+                                g[x].append(i_bis)
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
-                # print("voisin=", voisin)
-                # print(g)
                 dist_a_la_source[voisin] = dist_a_la_source[x]+1
                 voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid
                 # pour pouvoir utiliser borne_inf_a_dst
@@ -586,7 +602,6 @@ class Grid():
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
                     couts[voisin] = cout
-        #print(g)
         chemin = [dst_hash]  # on reconstitue le chemin parcouru pour arriver à la destination
         y = dst_hash
         while y != src_hash:
@@ -596,17 +611,15 @@ class Grid():
         chemin = [[list(t) for t in G] for G in chemin]
         return chemin
 
-
-
     """
     6_ cas particuliers et algorithmes
-        
+      
      - si on a une grille 1*n on se retrouve à devoir trier une liste. Il existe de nombreux
     algorithmes de tri dans ce cas. On peut par exemple effectuer un tri à bulles, qui trie
     la liste en comparant 2 par 2 les cases et en faisant à chque boucle remonter le plus
-    grand nombre. 
-    Il faut un tri où on n'échange que des cases qui se touchent, donc pas un tri par sélection par exemple
-    
+    grand nombre.
+    Il faut un tri où on n'échange que des cases qui se touchent, donc pas un tri par sélection par 
+    exemple
 
     """
             
@@ -624,9 +637,13 @@ class Grid():
                     swaps.append((L(j), L(j+1)))
         return swaps
 
+    def k_fixe(self):
+        m = self.m
+        n = self.n
+        G = self.state
+        
 
-A_grid = Grid.grid_from_file("input/grid7.in")
-B_grid = Grid.grid_from_file("input/grid8.in")
-print(Grid.barrieres(A_grid, A_grid, B_grid, (((1, 1), (1, 2)))))
 
-
+A_grid = Grid.grid_from_file("input/grid5.in")
+B_grid = Grid.grid_from_file("input/grid6.in")
+print(Grid.barrieres(A_grid, A_grid, B_grid, [[0, 1, 1, 1]]))
