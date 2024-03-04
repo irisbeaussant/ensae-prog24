@@ -348,7 +348,6 @@ class Grid():
                 break
             if x not in sommets_visites:
                 if x not in g:
-
                     g[x] = []  # on construit le graphe au fur et à mesure
                     x_l = list(list(element) for element in x)
                     for i in Grid.liste_noeuds_a_relier_bis(x_l):
@@ -641,7 +640,7 @@ class Grid():
         m = self.m
         n = self.n
         G = self.state
-        
+
 
 
 A_grid = Grid.grid_from_file("input/grid5.in")
