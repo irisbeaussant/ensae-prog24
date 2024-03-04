@@ -269,47 +269,35 @@ class Grid():
         m = len(grille)
         n = len(grille[0])
         L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
-        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des voisins de la grille
-            # on va construire tous les voisins. Cela évite d'avoir à comparer des grilles.
+        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des 
+            # voisins de la grille on va construire tous les voisins. Cela évite d'avoir à comparer des grilles.
             for j in range(n):
                 if (i-1) >= 0:
                     G = np.copy(grille)
-                    #print(G)
-                    #print(i, j,G, G[i][j], G[i-1][j] )
                     G[i][j], G[i-1][j] = G[i-1][j], G[i][j]
-                    #print(i,j,G)
-                    
                     L.append(G)
                 if (i+1) <= (m-1):
                     G = np.copy(grille)
                     G[i][j], G[i+1][j] = G[i+1][j], G[i][j]
-                    #print(G)
-                    
                     L.append(G)
                 if (j-1) >= 0:
                     G = np.copy(grille)
                     G[i][j], G[i][j-1] = G[i][j-1], G[i][j]
-                    #print(G)
-                    
                     L.append(G)
                 if (j+1) <= (n-1):
                     G = np.copy(grille)
                     G[i][j], G[i][j+1] = G[i][j+1], G[i][j]
-                    #print(G)
-                    
                     L.append(G)
         return L
         # renvoie une liste de couples qui sont voisins
-    print(",djdj", liste_noeuds_a_relier_bis([[1, 2], [3,4]]))
-
 
     # méthode BFS adaptée aux grilles
     # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
+
     def chemin_le_plus_court(self, etatinitial, etatfinal):
         graphe_grilles = Graph(Grid.noeuds(self))
         for (i, j) in self.liste_noeuds_a_relier():
             graphe_grilles.add_edge(i, j)
-
         src = tuple(tuple(element) for element in etatinitial)
         dst = tuple(tuple(element) for element in etatfinal)
         solution = graphe_grilles.bfs(src, dst)
@@ -345,7 +333,7 @@ class Grid():
     Question 8
 
     Pour ne visiter que la partie du graphe nécessaire pour arriver au noeud de destination,
-    il faut le construire au fur et à mesure de son parcours
+    il faut le construire au fur et à mesure de son parcours.
     
     """
 
@@ -402,7 +390,7 @@ class Grid():
     """
 
     @staticmethod
-    def calcul_coordonnees(x, m, n):
+    def calcul_coordonnees(x, m, n):  # calcule les coordonnées qu'une certaine case est censée avoir
         i = (x-1) // n
         j = (x-1) % n
         return (i, j)
@@ -416,7 +404,7 @@ class Grid():
         # renvoie la distance entre deux cases au sein d'une grille
 
     @staticmethod
-    def borne_inf_a_dst(G):
+    def borne_inf_a_dst(G):  # heuristique
         inf = 0
         G = list(list(element) for element in G)
         for i in range(len(G)):
@@ -455,25 +443,19 @@ class Grid():
         couts = {}
         couts[src_hash] = 0
         parents = {}
-        #print(Grid.liste_noeuds_a_relier_bis([[1,2],[3,4]]))
         while file:
-            #print("noeuds vis=", noeuds_visites)
             c, x = heapq.heappop(file)
             if x == dst_hash:
                 break
             if x not in g:
                 g[x] = []  # on construit le graphe au fur et à mesure
-                #print("g=", g)
                 x_l = list(list(element) for element in x)
-                
                 for i in Grid.liste_noeuds_a_relier_bis(x_l):
-                    
                     i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
                     # est une liste de liste de listes. Il faut donc les retransformer en des tuples
                     # afin d'avoir des variables hashables
                     if i not in g[x]:
                         g[x].append(i)
-                
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
