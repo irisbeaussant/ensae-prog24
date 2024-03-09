@@ -266,34 +266,6 @@ class Grid():
         return L
         # renvoie une liste de couples qui sont voisins
 
-    @staticmethod
-    def liste_noeuds_a_relier_bis(grille):  # prend en argument une liste de listes
-        m = len(grille)
-        n = len(grille[0])
-        L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
-        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des
-            # voisins de la grille on va construire tous les voisins. Cela évite d'avoir à comparer
-            # des grilles.
-            for j in range(n):
-                if (i-1) >= 0:
-                    G = np.copy(grille)
-                    G[i][j], G[i-1][j] = G[i-1][j], G[i][j]
-                    L.append(G)
-                if (i+1) <= (m-1):
-                    G = np.copy(grille)
-                    G[i][j], G[i+1][j] = G[i+1][j], G[i][j]
-                    L.append(G)
-                if (j-1) >= 0:
-                    G = np.copy(grille)
-                    G[i][j], G[i][j-1] = G[i][j-1], G[i][j]
-                    L.append(G)
-                if (j+1) <= (n-1):
-                    G = np.copy(grille)
-                    G[i][j], G[i][j+1] = G[i][j+1], G[i][j]
-                    L.append(G)
-        return L
-        # renvoie une liste de couples qui sont voisins
-
     # méthode BFS adaptée aux grilles
     # chemin_le_plus_court renvoie le chemin le plus court entre la source et la destination
 
@@ -340,52 +312,69 @@ class Grid():
     
     """
 
+    @staticmethod
+    def liste_noeuds_a_relier_bis(grille):  # prend en argument une liste de listes
+        m = len(grille)
+        n = len(grille[0])
+        L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
+        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des
+            # voisins de la grille on va construire tous les voisins. Cela évite d'avoir à comparer
+            # des grilles.
+            for j in range(n):
+                if (i-1) >= 0:
+                    G = np.copy(grille)
+                    G[i][j], G[i-1][j] = G[i-1][j], G[i][j]
+                    L.append(G)
+                if (i+1) <= (m-1):
+                    G = np.copy(grille)
+                    G[i][j], G[i+1][j] = G[i+1][j], G[i][j]
+                    L.append(G)
+                if (j-1) >= 0:
+                    G = np.copy(grille)
+                    G[i][j], G[i][j-1] = G[i][j-1], G[i][j]
+                    L.append(G)
+                if (j+1) <= (n-1):
+                    G = np.copy(grille)
+                    G[i][j], G[i][j+1] = G[i][j+1], G[i][j]
+                    L.append(G)
+        return L
+        # renvoie la liste des voisins
+                  
     def bfs_bis(self, src, dst):
         file = Queue()
+        src_hash = tuple(tuple(element) for element in src.state)
+        dst_hash = tuple(tuple(element) for element in dst.state)
+        file.put(src_hash)
         sommets_visites = []
         parents = {}  # est un dictionnaire du type {sommet : voisin parcouru juste avant}
         g = {}  # on initialise le dictionnaire du graphe
         while file:
             x = file.get()
-            if x == dst:
+            print("x1=", x)
+            if x == dst_hash:
                 break
             if x not in sommets_visites:
-                if x not in g:
-                    g[x] = []  # on construit le graphe au fur et à mesure
-                    x_l = list(list(element) for element in x)
-                    for i in Grid.liste_noeuds_a_relier_bis(x_l):
-                        i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
-                        # est une liste de liste de listes. Il faut donc les retransformer en des tuples
-                        # afin d'avoir des variables hashables
-                        if i not in g[x]:
-                            g[x].append(i)
-
-
-                    #g[x] = []  # on crée le dictionnaire au fur et à mesure qu'on en a besoin
-                    #for i in Grid.liste_noeuds_a_relier_bis(x_l):
-                       # i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
+                sommets_visites.append(x)
+            if x not in g:
+                g[x] = []  # on construit le graphe au fur et à mesure
+                x_l = list(list(element) for element in x)
+                for i in Grid.liste_noeuds_a_relier_bis(x_l):
+                    i = tuple(tuple(element) for element in i)  # la liste de noeuds voisins de x
                     # est une liste de liste de listes. Il faut donc les retransformer en des tuples
                     # afin d'avoir des variables hashables
-                        #if i not in g[x]:
-                           # g[x].append(i)
-                    #for (i, j) in Grid.liste_noeuds_a_relier(self):
-                      #  i1 = [list(t) for t in i]
-                       # j1 = [list(t) for t in j]
-                        #if Grid.comp_mat(self, x, i1):
-                         #   g[x].append(j)
-                    #    elif Graph.comp_mat(self, j1, x):
-                     #       g[x].append(i)
-                sommets_visites.append(x)
+                    if i not in g[x]:
+                        g[x].append(i)
             for voisin in g[x]:
                 if voisin not in sommets_visites:
                     file.put(voisin)
                     parents[voisin] = x
                     sommets_visites.append(voisin)
-        chemin = [dst]
-        y = dst
-        while y != src:
+        chemin = [dst_hash]
+        y = dst_hash
+        while y != src_hash:
             y = parents[y]
             chemin = [y] + chemin
+        chemin = [[list(t) for t in G] for G in chemin]
         return chemin
 
     """
@@ -658,7 +647,8 @@ plt.colorbar()
 plt.show()
 
 
-A_grid = Grid.grid_from_file("input/grid7.in")
-#B_grid = Grid.grid_from_file("input/grid6.in")
+A_grid = Grid.grid_from_file("input/grid5.in")
+B_grid = Grid.grid_from_file("input/grid6.in")
 #print(Grid.barrieres(A_grid, A_grid, B_grid, [[0, 1, 1, 1]]))
-print(Grid.representation_graphique(A_grid))
+print(Grid.bfs_bis(A_grid, A_grid, B_grid))
+#print(Grid.representation_graphique(A_grid))
