@@ -1,5 +1,6 @@
 from grid import Grid
 
+
 g = Grid(2, 3)
 print(g)
 
@@ -10,6 +11,7 @@ print(file_name)
 
 g = Grid.grid_from_file(file_name)
 print(g)
+
 
 """
     UTILISATION DES DIFFERENTES FONCTIONS

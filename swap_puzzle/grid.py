@@ -2,7 +2,7 @@ from itertools import permutations
 import numpy as np
 import random
 from itertools import permutations
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from graph import Graph
 from queue import Queue
 import heapq
@@ -155,14 +155,15 @@ class Grid():
     """
 
     def representation_graphique(self):
+        
         grille = np.array([[0 for i in range(self.n)] for j in range(self.m)])
         plt.imshow(grille)
-        for i in range(self.state.shape[0]):
-            for j in range(self.state.shape[1]):
+        for i in range(len(self.state)):
+            for j in range(len(self.state[0])):
                 plt.text(j, i, str(self.state[i][j]))
         plt.colorbar()
         plt.show()
-
+        
     def representation_graphique_bis(self):  # représentation sous la forme d'un tableau
         grille = self.state
         fig, ax = plt.subplots()
@@ -172,10 +173,11 @@ class Grid():
 
     """
     Question 6 :
-    Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non
-    mutable, on les transforme en tuples
 
-    Afin de créer toutes les grilles possibles on trouve toutes les permutations
+    Les noeuds sont de type hashable donc il faut transformer chaque grille en un élément non
+    mutable, on les transforme en tuples.
+
+    Afin de créer toutes les grilles possibles on trouve toutes les permutations.
 
     """
 
@@ -198,7 +200,7 @@ class Grid():
 
     -Pour créer tous les noeuds on permute une liste de longueur m*n donc il y a (mn)! noeuds
 
-    -A partir d'une grille mxn on peut réaliser m(n-1) swaps entre deux cases adjacentes 
+    -A partir d'une grille mxn on peut réaliser m(n-1) swaps entre deux cases adjacentes
      horizontalement et n(m-1) swaps entre deux cases adjacentes verticalement.
      Une grille a donc m(n-1)+n(m-1) voisins.
      Or si un noeud N1 est relié à N2 on a forcément N2 relié à N1, et ce par une unique arête.
@@ -269,8 +271,9 @@ class Grid():
         m = len(grille)
         n = len(grille[0])
         L = []  # on initialise la liste des noeuds qui sont des voisins de la grille qu'on étudie
-        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des 
-            # voisins de la grille on va construire tous les voisins. Cela évite d'avoir à comparer des grilles.
+        for i in range(m):   # au lieu de parcourir tous les noeuds et de vérifier s'il sont des
+            # voisins de la grille on va construire tous les voisins. Cela évite d'avoir à comparer
+            # des grilles.
             for j in range(n):
                 if (i-1) >= 0:
                     G = np.copy(grille)
@@ -400,7 +403,7 @@ class Grid():
     - on pourrait calculer la somme des distance euclidiennes mais cela ne paraît pas très adapté
     car on ne peut pas réaliser de swaps en diagonale
 
-    - on pourrait calculer le nombre de cases mal placées. en effet plus le nombre de cases mal 
+    - on pourrait calculer le nombre de cases mal placées. En effet plus le nombre de cases mal 
     placées est grand plus le coût serait grand.
 
     """
@@ -642,7 +645,20 @@ class Grid():
         G = self.state
 
 
+A=[[1,3],[2,3]]
+m=2
+n=2
+grille = np.array([[0 for i in range(n)] for j in range(m)])
+plt.imshow(grille)
 
-A_grid = Grid.grid_from_file("input/grid5.in")
-B_grid = Grid.grid_from_file("input/grid6.in")
-print(Grid.barrieres(A_grid, A_grid, B_grid, [[0, 1, 1, 1]]))
+for i in range(n):
+    for j in range(m):
+        plt.text(j, i, str(A[i][j]))
+plt.colorbar()
+plt.show()
+
+
+A_grid = Grid.grid_from_file("input/grid7.in")
+#B_grid = Grid.grid_from_file("input/grid6.in")
+#print(Grid.barrieres(A_grid, A_grid, B_grid, [[0, 1, 1, 1]]))
+print(Grid.representation_graphique(A_grid))

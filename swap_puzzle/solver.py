@@ -1,6 +1,33 @@
 from grid import Grid
 
 
+
+import matplotlib.pyplot as plt
+import numpy as np
+grille=np.array([[1,1], [1,1]])
+m, n = grille.shape
+
+# Créer une figure et des axes
+fig, ax = plt.subplots()
+
+# Afficher la grille vide
+ax.imshow(np.zeros((m, n)), cmap='viridis', origin='upper', extent=[0, n, m, 0])
+
+# Ajouter les chiffres dans chaque case
+for i in range(m):
+    for j in range(n):
+        chiffre = grille[i, j]
+        ax.text(j + 0.5, i + 0.5, str(chiffre), color='white', ha='center', va='center')
+
+# Afficher la barre de couleur (facultatif)
+cbar = plt.colorbar(ax.imshow(grille, cmap='viridis', origin='upper', extent=[0, n, m, 0]))
+cbar.set_label("Valeurs")
+
+# Afficher la grille
+plt.grid(True, color='black', linewidth=1)
+plt.show()
+
+
 def calcul_coordonnees(x, m, n):
     i = (x-1) // n
     j = (x-1) % n
