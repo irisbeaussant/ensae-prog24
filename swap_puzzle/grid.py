@@ -350,7 +350,6 @@ class Grid():
         g = {}  # on initialise le dictionnaire du graphe
         while file:
             x = file.get()
-            print("x1=", x)
             if x == dst_hash:
                 break
             if x not in sommets_visites:
@@ -429,17 +428,6 @@ class Grid():
                 if self.state[i][j] == k:
                     return (i, j)
 
-    @staticmethod
-    #def dist_grilles(G, src):  # permet de claculer la distance entre la source et la grille
-        # actuelle. Permet de calculer le coût
-     #   dist = 0
-      #  G = list(list(element) for element in G)
-       # for i in range(len(G)):
-        #    for j in range(len(G[0])):
-         #       if G[i][j] != src.state[i][j]:
-          #          dist += Grid.dist_cases((i, j), src.trouver_coord(G[i][j]))
-        #return dist
-
     def A_star(self, src, dst):
         noeuds_visites = []
         src_hash = tuple(tuple(element) for element in src.state)
@@ -467,24 +455,20 @@ class Grid():
             if x not in noeuds_visites:
                 noeuds_visites.append(x)
             for voisin in g[x]:
-                #print("voisin=", voisin)
-                #print(g)
                 dist_a_la_source[voisin] = dist_a_la_source[x]+1
                 voisin_liste = list(list(x) for x in voisin)  # il faut retransformer en grid pour
                 # pouvoir utiliser borne_inf_a_dst
                 cout = dist_a_la_source[voisin] + Grid.borne_inf_a_dst(voisin_liste)
-                # couts[voisin] = cout
                 if voisin in noeuds_visites and couts[voisin] >= cout:
                     noeuds_visites.append(voisin)
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
                     couts[voisin] = cout
-                if voisin not in noeuds_visites:   # or (voisin in noeuds_visites and couts[voisin] >= cout):
+                if voisin not in noeuds_visites:
                     noeuds_visites.append(voisin)
                     parents[voisin] = x
                     heapq.heappush(file, (cout, voisin))
                     couts[voisin] = cout
-        #print(g)
         chemin = [dst_hash]  # on reconstitue le chemin parcouru pour arriver à la destination
         y = dst_hash
         while y != src_hash:
@@ -564,7 +548,7 @@ class Grid():
                 x_l = list(list(element) for element in x)
                 for i in Grid.liste_noeuds_a_relier_bis(x_l):
                     i_bis = tuple(tuple(element) for element in i)  # la liste de noeuds
-                    # voisins de x est une liste de liste de listes. Il faut donc les                     
+                    # voisins de x est une liste de liste de listes. Il faut donc les                 
                     # retransformer en des tuples afin d'avoir des variables hashables
                     if not g[x]:
                         g[x].append(i_bis)
