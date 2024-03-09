@@ -166,9 +166,18 @@ class Grid():
         
     def representation_graphique_bis(self):  # représentation sous la forme d'un tableau
         grille = self.state
+
         fig, ax = plt.subplots()
+
+        taille_case = 0.3
+
         ax.set_axis_off()
-        ax.table(cellText=grille, cellLock='center')
+        tableau = ax.table(cellText=grille, cellLock='center')
+        tableau.scale(1, 1)
+
+        for texte, case in tableau.get_celld().items():
+            case.set_height(taille_case)
+            case.set_width(taille_case)
         plt.show()
 
     """
