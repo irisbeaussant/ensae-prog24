@@ -621,27 +621,36 @@ class Grid():
                     swaps.append((L(j), L(j+1)))
         return swaps
 
-    def k_fixe(self):
+    """
+    Choix de la difficulté de la grille
+    """
+    def difficulte(self, difficulte):  # difficulte doit valoir 1, 2 ou 3
         m = self.m
         n = self.n
-        G = self.state
-
-
-A=[[1,3],[2,3]]
-m=2
-n=2
-grille = np.array([[0 for i in range(n)] for j in range(m)])
-plt.imshow(grille)
-
-for i in range(n):
-    for j in range(m):
-        plt.text(j, i, str(A[i][j]))
-plt.colorbar()
-plt.show()
-
-
-A_grid = Grid.grid_from_file("input/grid5.in")
-B_grid = Grid.grid_from_file("input/grid6.in")
-#print(Grid.barrieres(A_grid, A_grid, B_grid, [[0, 1, 1, 1]]))
-print(Grid.bfs_bis(A_grid, A_grid, B_grid))
-#print(Grid.representation_graphique(A_grid))
+        if difficulte == 1:
+            nombre_swaps = min(m, n)
+        if difficulte == 2:
+            nombre_swaps = m+n
+        if difficulte == 3:
+            nombre_swaps = 2*(m+n)
+        for i in range(nombre_swaps):
+            x = random.randint(0, n-1)
+            y = random.randint(0, m-1)
+            depl = random.randint(0, 1)  # 0 pour un déplacement vers la gauche ou vers le bas,
+            # 1 vers la droite ou vers le haut
+            x_ou_y = random.randint(0, 1)  # 0 pour un déplacement vertical, 1 pour un
+            # déplacement horizontal
+            if x_ou_y == 0:
+                if depl == 0:
+                    if x-1 >= 0:
+                        Grid.swap(self, (x, y), (x-1, y))
+                elif depl == 1:
+                    if x+1 <= n-1:
+                        Grid.swap(self, (x, y), (x+1, y))            
+            if x_ou_y == 0:
+                if depl == 0:
+                    if y-1 >= 0:
+                        Grid.swap(self, (x, y), (x, y-1))
+                if depl == 1:
+                    if y+1 <= m-1:
+                        Grid.swap(self, (x, y), (x, y+1))
